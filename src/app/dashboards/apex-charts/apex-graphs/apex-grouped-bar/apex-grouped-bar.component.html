@@ -1,0 +1,21 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>
+      How do my messages look weekly?
+    </mat-card-title>
+    <mat-card-subtitle>
+      Looking at message breakdown week to week.
+    </mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <apx-chart
+      #chart
+      [chart]="chartDetails"
+      [colors]="colors"
+      [series]="data.series"
+      [xaxis]="data.xaxis"
+      [legend]="legend"
+    >
+    </apx-chart>
+  </mat-card-content>
+</mat-card>

@@ -7,11 +7,14 @@
     <nav>
         <a mat-button routerLink="/ngx-charts" routerLinkActive="active">NGX Charts</a>
         <a mat-button routerLink="/apex-charts" routerLinkActive="active">Apex Charts</a>
+        <a mat-button routerLink="/ng2-charts" routerLinkActive="active">Ng2 Charts</a>
     </nav>
   </mat-sidenav>
 
   <mat-sidenav-content>
-    <router-outlet></router-outlet>
+    <div style="margin-left: 100px; margin-right: 100px;">
+      <router-outlet></router-outlet>
+    </div>
   </mat-sidenav-content>
 </mat-sidenav-container>
 

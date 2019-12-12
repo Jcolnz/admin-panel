@@ -1,5 +1,6 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import * as data from './data';
+import {ApexChart, ApexXAxis, ApexYAxis} from 'ng-apexcharts';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,6 @@ export class DataService {
   public verificationMethods: any[] = [];
   public parsedData: DataStructure[] = [];
   public businessRulesData: DataStructure[] = [];
-
   constructor() {
     this.convertData();
     this.mockBusinessRulesData();
@@ -94,8 +94,7 @@ export class DataService {
   }
 
   public convertData() {
-
-    data.rawData.forEach(obj => {
+    return data.rawData.map(obj => {
       if (obj.RECIPIENT_DOMAIN === 'gmail.com' || obj.RECIPIENT_DOMAIN === 'connect4care.nl' || obj.RECIPIENT_DOMAIN === 'veenendaal.nl' ||
         obj.RECIPIENT_DOMAIN === 'hotmail.com') {
         if (this.parsedData.some(e => e.name === obj.RECIPIENT_DOMAIN) === false) {
@@ -123,9 +122,9 @@ export class DataService {
           }
         }
       }
-
     });
   }
+
 
   public mockSingleSeriesData(seriesName: string, min, max, total) {
     const mockData: DataStructure[] = [{
@@ -151,17 +150,13 @@ export class DataService {
     return mockData;
   }
 
-  public mockMutliSingleSeriesData(nameArr: multiDataArr[]) {
-    const mockData: ArrayData[] = [];
-
-    nameArr.forEach(el => {
-      mockData.push({
-        name: el.name,
-        value: this.randomGen(el.min, el.max)
-      });
+  public mockMutliSingleSeriesData(nameArr: MultiDataArr[]) {
+    return nameArr.map(item => {
+      return {
+        name: item.name,
+        value: this.randomGen(item.min, item.max)
+      };
     });
-
-    return mockData
   }
 
   public mockBusinessRulesData() {
@@ -178,14 +173,14 @@ export class DataService {
     return this.businessRulesData = mockData;
   }
 
-  private createMultiSeriesData(arr, key, data) {
+  private createMultiSeriesData(arr, key, name) {
     const found = arr.some(el => el.name === key);
     if (!found) {
       const newEl = {
         name: key,
         series: [
           {
-            name: data,
+            name,
             value: 1
           }
         ]
@@ -193,35 +188,116 @@ export class DataService {
       arr.push(newEl);
     } else if (found) {
       const existingEl = arr.find(el => el.name === key);
-      const existingElFound = existingEl.series.some(el => el.name === data);
+      const existingElFound = existingEl.series.some(el => el.name === name);
       if (!existingElFound) {
         existingEl.series.push({
-          name: data,
+          name,
           value: 1
         });
       } else {
-        existingEl.series.find(el => el.name === data).value++;
+        existingEl.series.find(el => el.name === name).value++;
       }
     }
   }
 
   private randomGen(min, max) {
-    return Math.floor(Math.random() * (max - min + 1) ) + min;
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+
+  /* ----------- APEX DATA GENERATION ---------- */
+
+  public apexGroupedBarData(): ApexBarSeries {
+    return {
+      series: [
+        {
+          name: 'SENT_MESSAGES',
+          data: [197, 348, 359, 351]
+        },
+        {
+          name: 'RECEIVED_MESSAGES',
+          data: [285, 424, 414, 442]
+        },
+        {
+          name: 'READ_MESSAGES',
+          data: [256, 389, 394, 396]
+        },
+        {
+          name: 'INTERNAL_MESSAGES',
+          data: [178, 268, 286, 299]
+        }],
+      xaxis: {
+        categories: ['2019-01-07', '2019-01-14', '2019-01-21', '2019-01-28']
+      }
+    };
+  }
+
+  public apex2faData(): ApexBarSeries {
+    const result = new ApexBarSeries();
+
+    data.rawData.forEach(obj => {
+      const recipient = obj.RECIPIENT_TYPE;
+      const existingEl = result.series.find(({ name }) => name === recipient) as ApexSeriesData;
+      existingEl !== undefined ? existingEl.data[0] += 1 : result.series.push({ name: recipient, data: [1] });
+    });
+
+    return result;
+  }
+
+  apexVerificationData(): ApexBarSeries {
+    const result = new ApexBarSeries();
+
+    data.rawData.forEach(obj => {
+      let method = obj.VERIFICATION_METHOD;
+      if (method === 'Organization Access Code' || method === 'Personal Access Code' || method === 'Generated Code') {
+        method = 'Access Code';
+      }
+      const existingEl = result.series.find(({ name }) => name === method) as ApexSeriesData;
+      existingEl !== undefined ? existingEl.data[0] += 1 : result.series.push({ name: method, data: [1] });
+    });
+
+    return result;
   }
 }
 
-export class DataStructure {
+export interface DataStructure {
   name: string;
   series: ArrayData[];
 }
 
-export class ArrayData {
+export interface ArrayData {
   name: string;
   value: number;
 }
 
-export class multiDataArr {
+export interface MultiDataArr {
   name: string;
   min: number;
   max: number;
 }
+
+export class ApexBarSeries {
+  series: ApexSeriesData[] = [];
+  xaxis?: ApexXAxis = {};
+  yaxis?: ApexYAxis = {};
+
+  constructor() {}
+}
+
+export interface ApexSeriesData {
+  name: string;
+  data: number[];
+}
+
+/* Data example
+   {
+     "KEY_MESSAGE":"20a3804f27917719e63f139e65242b970bd0513ebc4ca3f77f6fb5a2d69c7786",
+     "KEY_ACCOUNT_RECIPIENT":"b7b68620b602335dccf8b709704ab6fac0912213b7c25005499ae152b84a40f3",
+     "SENT_AT":"2019-12-03T22:13:58.661+01:00",
+     "IS_INTERNAL_RECIPIENT":0,
+     "RECIPIENT_TYPE":"Guest",
+     "VERIFICATION_METHOD":"Email",
+     "RECIPIENT_DOMAIN":"rentawarroom.nl",
+     "IS_OPENED":0
+   },
+   */

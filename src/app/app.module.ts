@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 // material imports
 import {MatCardModule} from '@angular/material/card';
@@ -12,27 +13,37 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatGridListModule} from '@angular/material/grid-list';
 import {MatButtonModule} from '@angular/material/button';
 
-import { GraphComponent } from './graphs/ngx-charts/graph/graph.component';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
-
+import { NgApexchartsModule } from 'ng-apexcharts';
 import 'hammerjs';
-import { HomeHeaderSectionComponent } from './home-header-section/home-header-section.component';
-import { HomeMiddleSectionComponent } from './home-middle-section/home-middle-section.component';
-import { NormalizedHorizontalBarComponent } from './graphs/ngx-charts/normalized-horizontal-bar/normalized-horizontal-bar.component';
-import { DataService } from './data.service';
-import { DomainsGraphComponent } from './graphs/ngx-charts/domains-graph/domains-graph.component';
-import { BusinessRulesComponent } from './graphs/ngx-charts/business-rules/business-rules.component';
-import { SparklinesComponent } from './graphs/ngx-charts/sparklines/sparklines.component';
-import { AdvancedPieComponent } from './graphs/ngx-charts/advanced-pie/advanced-pie.component';
-import { HomeBottomSectionComponent } from './home-bottom-section/home-bottom-section.component';
-import { CardsComponent } from './graphs/ngx-charts/cards/cards.component';
-import { NgxChartsComponent } from './dashboards/ngx-charts/ngx-charts.component';
 
+// components
+import { HomeHeaderSectionComponent } from './dashboards/ngx-charts/home-header-section/home-header-section.component';
+import { HomeMiddleSectionComponent } from './dashboards/ngx-charts/home-middle-section/home-middle-section.component';
+import { NormalizedHorizontalBarComponent } from './dashboards/ngx-charts/ngx-graphs/normalized-horizontal-bar/normalized-horizontal-bar.component';
+import { DataService } from './data.service';
+import { DomainsGraphComponent } from './dashboards/ngx-charts/ngx-graphs/domains-graph/domains-graph.component';
+import { BusinessRulesComponent } from './dashboards/ngx-charts/ngx-graphs/business-rules/business-rules.component';
+import { SparklinesComponent } from './dashboards/ngx-charts/ngx-graphs/sparklines/sparklines.component';
+import { AdvancedPieComponent } from './dashboards/ngx-charts/ngx-graphs/advanced-pie/advanced-pie.component';
+import { HomeBottomSectionComponent } from './dashboards/ngx-charts/home-bottom-section/home-bottom-section.component';
+import { CardsComponent } from './dashboards/ngx-charts/ngx-graphs/cards/cards.component';
+import { NgxChartsComponent } from './dashboards/ngx-charts/ngx-charts.component';
+import { NgxGroupedBarComponent } from './dashboards/ngx-charts/ngx-graphs/ngx-grouped-bar/ngx-grouped-bar.component';
+import { ApexChartsComponent } from './dashboards/apex-charts/apex-charts.component';
+import { ApexHomeHeaderSectionComponent } from './dashboards/apex-charts/apex-home-header-section/apex-home-header-section.component';
+import { ApexHomeMiddleSectionComponent } from './dashboards/apex-charts/apex-home-middle-section/apex-home-middle-section.component';
+import { ApexHomeBottomSectionComponent } from './dashboards/apex-charts/apex-home-bottom-section/apex-home-bottom-section.component';
+
+import { SeriesPipe } from './dashboards/apex-charts/apex-home-header-section/series.pipe';
+import { Ng2ChartsComponent } from './dashboards/ng2-charts/ng2-charts.component';
+import { ApexGroupedBarComponent } from './dashboards/apex-charts/apex-graphs/apex-grouped-bar/apex-grouped-bar.component';
+import { ApexNormalizedHorizontalBarComponent } from './dashboards/apex-charts/apex-graphs/apex-normalized-horizontal-bar/apex-normalized-horizontal-bar.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    GraphComponent,
+    NgxGroupedBarComponent,
     HomeHeaderSectionComponent,
     HomeMiddleSectionComponent,
     NormalizedHorizontalBarComponent,
@@ -42,7 +53,15 @@ import { NgxChartsComponent } from './dashboards/ngx-charts/ngx-charts.component
     AdvancedPieComponent,
     HomeBottomSectionComponent,
     CardsComponent,
-    NgxChartsComponent
+    NgxChartsComponent,
+    ApexChartsComponent,
+    ApexHomeHeaderSectionComponent,
+    ApexHomeMiddleSectionComponent,
+    ApexHomeBottomSectionComponent,
+    SeriesPipe,
+    Ng2ChartsComponent,
+    ApexGroupedBarComponent,
+    ApexNormalizedHorizontalBarComponent
   ],
   imports: [
     BrowserModule,
@@ -53,7 +72,13 @@ import { NgxChartsComponent } from './dashboards/ngx-charts/ngx-charts.component
     MatToolbarModule,
     MatGridListModule,
     MatButtonModule,
-    NgxChartsModule
+    NgxChartsModule,
+    NgApexchartsModule,
+    FormsModule,
+    ReactiveFormsModule
+  ],
+  exports: [
+    SeriesPipe
   ],
   providers: [DataService],
   bootstrap: [AppComponent]
