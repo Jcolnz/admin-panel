@@ -1,0 +1,24 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>
+      Does my organization send messages securely when necessary?
+    </mat-card-title>
+    <mat-card-subtitle>
+      Number of emails and % sent securely, by triggered business rule
+    </mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <apx-chart
+      #chart
+      [chart]="chartOptions.chartDetails"
+      [colors]="chartOptions.colors"
+      [legend]="chartOptions.legend"
+      [plotOptions]="chartOptions.plotOptions"
+      [series]="data.series"
+      [tooltip]="chartOptions.tooltip"
+      [xaxis]="data.xaxis"
+    ></apx-chart>
+  </mat-card-content>
+</mat-card>
+

@@ -1,0 +1,40 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>
+      Does my organization use 2FA effectively?
+    </mat-card-title>
+    <mat-card-subtitle>
+      % of messages sent to recipients with and without ZIVVER accounts
+    </mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="graph-container">
+      <apx-chart
+        #recipientsWithZIVVERAccount
+        [chart]="chartOptions.chartDetails"
+        [colors]="chartOptions.colors"
+        [legend]="chartOptions.legend"
+        [plotOptions]="chartOptions.plotOptions"
+        [tooltip]="chartOptions.tooltip"
+        [title]="data.twoFactorDataSet.title"
+        [series]="data.twoFactorDataSet.series"
+        [xaxis]="data.twoFactorDataSet.xaxis"
+        [yaxis]="data.twoFactorDataSet.yaxis"
+      >
+      </apx-chart>
+    </div>
+    <apx-chart
+      #guestRecipientVerificationMethod
+      [chart]="chartOptions.chartDetails"
+      [colors]="chartOptions.colors"
+      [legend]="chartOptions.legend"
+      [plotOptions]="chartOptions.plotOptions"
+      [tooltip]="chartOptions.tooltip"
+      [title]="data.verificationMethodsDataSet.title"
+      [series]="data.verificationMethodsDataSet.series"
+      [xaxis]="data.verificationMethodsDataSet.xaxis"
+      [yaxis]="data.verificationMethodsDataSet.yaxis"
+    ></apx-chart>
+  </mat-card-content>
+</mat-card>

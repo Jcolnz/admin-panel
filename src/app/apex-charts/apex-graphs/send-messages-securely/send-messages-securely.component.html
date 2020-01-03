@@ -1,0 +1,50 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>
+      Does my organization send messages securely when necessary?
+    </mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <apx-chart
+      #messageClassification
+      [chart]="chartOptions.chartDetails"
+      [colors]="chartOptions.colors"
+      [legend]="chartOptions.legend"
+      [plotOptions]="chartOptions.plotOptions"
+      [title]="messageResult.title"
+      [series]="messageResult.series"
+      [xaxis]="messageResult.xaxis"
+      [yaxis]="messageResult.yaxis"
+      [tooltip]="chartOptions.tooltip"
+    >
+    </apx-chart>
+
+    <apx-chart
+      #triggeredBusinessRules
+      [chart]="chartOptions.chartDetails"
+      [colors]="chartOptions.colors"
+      [legend]="chartOptions.legend"
+      [plotOptions]="chartOptions.plotOptions"
+      [tooltip]="chartOptions.tooltip"
+      [title]="triggeredResult.title"
+      [series]="triggeredResult.series"
+      [xaxis]="triggeredResult.xaxis"
+      [yaxis]="triggeredResult.yaxis"
+    >
+    </apx-chart>
+
+    <apx-chart
+      #recipientDomain
+      [chart]="chartOptions.chartDetails"
+      [colors]="chartOptions.colors"
+      [legend]="chartOptions.legend"
+      [plotOptions]="chartOptions.plotOptions"
+      [tooltip]="chartOptions.tooltip"
+      [title]="domainResult.title"
+      [series]="domainResult.series"
+      [xaxis]="domainResult.xaxis"
+      [yaxis]="domainResult.yaxis"
+    >
+    </apx-chart>
+  </mat-card-content>
+</mat-card>

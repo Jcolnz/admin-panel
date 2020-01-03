@@ -1,0 +1,23 @@
+<mat-card>
+    <mat-card-header>
+      <mat-card-title>
+        With whom do we communicate and do they read our messages?
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <apx-chart
+        #recipientDomain
+        [chart]="chartOptions.chartDetails"
+        [colors]="chartOptions.colors"
+        [legend]="chartOptions.legend"
+        [plotOptions]="chartOptions.plotOptions"
+        [tooltip]="chartOptions.tooltip"
+        [title]="data.domainDataSet.title"
+        [series]="data.domainDataSet.series"
+        [xaxis]="data.domainDataSet.xaxis"
+        [yaxis]="data.domainDataSet.yaxis"
+      >
+      </apx-chart>
+    </mat-card-content>
+  </mat-card>
+  

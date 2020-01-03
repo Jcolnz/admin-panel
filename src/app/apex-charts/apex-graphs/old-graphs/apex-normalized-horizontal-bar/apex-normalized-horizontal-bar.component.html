@@ -1,0 +1,38 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>
+      Does my organization use 2FA effectively?
+    </mat-card-title>
+    <mat-card-subtitle>
+      % of messages sent to recipients with and without ZIVVER accounts
+    </mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="graph-container">
+      <apx-chart
+        #chart
+        [chart]="chartOptions.chartDetails"
+        [colors]="chartOptions.colors"
+        [legend]="chartOptions.legend"
+        [plotOptions]="chartOptions.plotOptions"
+        [series]="dataService.apex2faTest.series"
+        [tooltip]="chartOptions.tooltip"
+        [xaxis]="dataService.apex2faTest.xaxis"
+        [yaxis]="chartOptions.yaxis"
+        [autoUpdateSeries]="true"
+      ></apx-chart>
+    </div>
+    <apx-chart
+      #chart2
+      [chart]="chartOptions.chartDetails"
+      [colors]="chartOptions.colors"
+      [legend]="chartOptions.legend"
+      [plotOptions]="chartOptions.plotOptions"
+      [series]="data2.series"
+      [tooltip]="chartOptions.tooltip"
+      [xaxis]="data2.xaxis"
+      [yaxis]="chartOptions.yaxis"
+    ></apx-chart>
+  </mat-card-content>
+</mat-card>

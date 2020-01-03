@@ -1,213 +1,36 @@
 import {Injectable} from '@angular/core';
+import {ApexOptions, ApexTitleSubtitle, ApexXAxis, ApexYAxis} from 'ng-apexcharts';
 import * as data from './data';
-import {ApexChart, ApexXAxis, ApexYAxis} from 'ng-apexcharts';
+import {mockData} from './mock-data';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
 
-  public convertedData: any[];
-  public verificationMethods: any[] = [];
-  public parsedData: DataStructure[] = [];
-  public businessRulesData: DataStructure[] = [];
+  public filteredDataSet: any;
+  public twoFactorDataSet: ApexOptions;
+  public verificationMethodsDataSet: ApexOptions;
+  public domainDataSet: ApexOptions;
+
   constructor() {
-    this.convertData();
-    this.mockBusinessRulesData();
   }
 
-  public convert2FAArray() {
-    const twoFactorData = data.twoFaData;
-    let zivverCount = 0;
-    let guestCount = 0;
-
-    twoFactorData.forEach(item => {
-      item === 'Recipient with ZIVVER' ? zivverCount++ : guestCount++;
+  /* ----------- FILTERING ---------- */
+  public filterData(startDate?, endDate?) {
+    this.filteredDataSet = mockData.filter(obj => {
+      const objDate = new Date(obj.send_date);
+      return objDate >= startDate && objDate <= endDate;
     });
-
-    this.convertedData = [
-      {
-        name: 'data',
-        series: [
-          {
-            name: 'Recipient with ZIVVER',
-            value: zivverCount
-          },
-          {
-            name: 'Guest',
-            value: guestCount
-          }
-        ]
-      }
-    ];
-
-    return this.convertedData;
+    this.twoFactorData(true);
+    this.verificationMethodData(true);
+    this.domainData(true);
   }
-
-  public convertVerificationType() {
-    const verificationData = data.verificationData;
-    const verificationMethodData = {
-      name: 'data',
-      series: [
-        {
-          name: 'ZIVVER',
-          value: 0
-        },
-        {
-          name: 'AccessCode',
-          value: 0
-        },
-        {
-          name: 'Email',
-          value: 0
-        },
-        {
-          name: 'Sms',
-          value: 0
-        }
-      ]
-    };
-
-    verificationData.forEach(el => {
-      switch (el) {
-        case 'Zivver': {
-          verificationMethodData.series[0].value++;
-          break;
-        }
-        case 'Organization Access Code':
-        case 'Personal Access Code': {
-          verificationMethodData.series[1].value++;
-          break;
-        }
-        case 'Email': {
-          verificationMethodData.series[2].value++;
-          break;
-        }
-        case 'Sms': {
-          verificationMethodData.series[3].value++;
-          break;
-        }
-      }
-    });
-
-    return this.verificationMethods.push(verificationMethodData);
-  }
-
-  public convertData() {
-    return data.rawData.map(obj => {
-      if (obj.RECIPIENT_DOMAIN === 'gmail.com' || obj.RECIPIENT_DOMAIN === 'connect4care.nl' || obj.RECIPIENT_DOMAIN === 'veenendaal.nl' ||
-        obj.RECIPIENT_DOMAIN === 'hotmail.com') {
-        if (this.parsedData.some(e => e.name === obj.RECIPIENT_DOMAIN) === false) {
-          this.parsedData.push({
-            name: obj.RECIPIENT_DOMAIN,
-            series: [
-              {
-                name: 'Opened',
-                value: 0
-              },
-              {
-                name: 'Unopened',
-                value: 0
-              }
-            ]
-          });
-        }
-        if (this.parsedData.some(e => e.name === obj.RECIPIENT_DOMAIN) === true) {
-          if (obj.IS_OPENED === 1) {
-            const el = this.parsedData.find(e => e.name === obj.RECIPIENT_DOMAIN);
-            el.series.find(e => e.name === 'Opened').value++;
-          } else {
-            const el = this.parsedData.find(e => e.name === obj.RECIPIENT_DOMAIN);
-            el.series.find(e => e.name === 'Unopened').value++;
-          }
-        }
-      }
-    });
-  }
-
-
-  public mockSingleSeriesData(seriesName: string, min, max, total) {
-    const mockData: DataStructure[] = [{
-      name: seriesName,
-      series: [
-        {
-          name: '1',
-          value: 1
-        }
-      ]
-    }];
-    let count = 0;
-
-    while (count < total) {
-
-      mockData[0].series.push({
-        name: count.toString(),
-        value: this.randomGen(min, max)
-      });
-      count++;
-    }
-
-    return mockData;
-  }
-
-  public mockMutliSingleSeriesData(nameArr: MultiDataArr[]) {
-    return nameArr.map(item => {
-      return {
-        name: item.name,
-        value: this.randomGen(item.min, item.max)
-      };
-    });
-  }
-
-  public mockBusinessRulesData() {
-    const mockData: DataStructure[] = [];
-    let count = 0;
-
-    while (count < 1000) {
-      const type = this.randomGen(1, 3) === 1 ? 'medical' : this.randomGen(1, 3) === 2 ? 'bsn' : 'legal';
-      const secure = this.randomGen(1, 2) === 1 ? 'secure' : 'normal';
-      this.createMultiSeriesData(mockData, type, secure);
-      count++;
-    }
-
-    return this.businessRulesData = mockData;
-  }
-
-  private createMultiSeriesData(arr, key, name) {
-    const found = arr.some(el => el.name === key);
-    if (!found) {
-      const newEl = {
-        name: key,
-        series: [
-          {
-            name,
-            value: 1
-          }
-        ]
-      };
-      arr.push(newEl);
-    } else if (found) {
-      const existingEl = arr.find(el => el.name === key);
-      const existingElFound = existingEl.series.some(el => el.name === name);
-      if (!existingElFound) {
-        existingEl.series.push({
-          name,
-          value: 1
-        });
-      } else {
-        existingEl.series.find(el => el.name === name).value++;
-      }
-    }
-  }
-
-  private randomGen(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
-
+  /* ----------- FILTERING ---------- */
 
   /* ----------- APEX DATA GENERATION ---------- */
 
-  public apexGroupedBarData(): ApexBarSeries {
+  /*public apexGroupedBarData(): ApexBarSeries {
     return {
       series: [
         {
@@ -230,74 +53,412 @@ export class DataService {
         categories: ['2019-01-07', '2019-01-14', '2019-01-21', '2019-01-28']
       }
     };
-  }
+  }*/
 
-  public apex2faData(): ApexBarSeries {
+  /*public apex2faData(filteredData?): ApexBarSeries {
     const result = new ApexBarSeries();
+    result.xaxis = {
+      title: {
+        text: '% of sent ZIVVER messages'
+      }
+    };
 
-    data.rawData.forEach(obj => {
+    let rawData = data.rawData;
+
+    if (filteredData) {
+      rawData = filteredData;
+    }
+
+    rawData.forEach(obj => {
       const recipient = obj.RECIPIENT_TYPE;
       const existingEl = result.series.find(({ name }) => name === recipient) as ApexSeriesData;
       existingEl !== undefined ? existingEl.data[0] += 1 : result.series.push({ name: recipient, data: [1] });
     });
 
-    return result;
-  }
+    console.log(result);
+    return this.apex2faTest = result;
+  }*/
 
-  apexVerificationData(): ApexBarSeries {
+  /*apexVerificationData(filteredData?): ApexBarSeries {
     const result = new ApexBarSeries();
+    let rawData = data.rawData;
 
-    data.rawData.forEach(obj => {
-      let method = obj.VERIFICATION_METHOD;
-      if (method === 'Organization Access Code' || method === 'Personal Access Code' || method === 'Generated Code') {
-        method = 'Access Code';
-      }
-      const existingEl = result.series.find(({ name }) => name === method) as ApexSeriesData;
-      existingEl !== undefined ? existingEl.data[0] += 1 : result.series.push({ name: method, data: [1] });
+    if (filteredData) {
+      rawData = filteredData;
+    }
+
+    // need to remove zivver && personal and orgazantional access code seperate
+    rawData.forEach(obj => {
+      const method = obj.VERIFICATION_METHOD;
+      // if (method === 'Organization Access Code' || method === 'Personal Access Code' || method === 'Generated Code') {
+      //  method = 'Access Code';
+      // }
+      const existingObj = result.series.find(({ name }) => name === method) as ApexSeriesData;
+      existingObj !== undefined ? existingObj.data[0] += 1 : result.series.push({ name: method, data: [1] });
     });
 
     return result;
+  }*/
+
+  /*public apexDomainData(): ApexBarSeries {
+    const result = new ApexBarSeries();
+    const domainsList = ['gmail.com', 'hotmail.com', 'connect4care.nl', 'veenendaal.nl'];
+    // const domainsList = [...new Set(data.rawData.map(obj => obj.RECIPIENT_DOMAIN))]; // becomes x
+    result.series = [
+      {
+        name: 'Unopened',
+        data: []
+      },
+      {
+        name: 'Opened',
+        data: []
+      },
+    ];
+
+    data.rawData.forEach(obj => {
+      const currentDomainIndex = domainsList.findIndex(domain => domain === obj.RECIPIENT_DOMAIN);
+      if (obj.RECIPIENT_DOMAIN === 'gmail.com' || obj.RECIPIENT_DOMAIN === 'hotmail.com' ||
+        obj.RECIPIENT_DOMAIN === 'connect4care.nl' || obj.RECIPIENT_DOMAIN === 'veenendaal.nl') {
+        if (obj.IS_OPENED === 1) {
+          result.series[1].data[currentDomainIndex] !== undefined ? result.series[1].data[currentDomainIndex] += 1 :
+            result.series[1].data[currentDomainIndex] = 1;
+        } else {
+          result.series[0].data[currentDomainIndex] !== undefined ? result.series[0].data[currentDomainIndex] += 1 :
+            result.series[0].data[currentDomainIndex] = 1;
+        }
+      }
+    });
+
+    result.xaxis.categories = ['gmail.com', 'hotmail.com', 'connect4care.nl', 'veenendaal.nl'];
+    // result.xaxis.categories = domainsList;
+
+    return result;
+  }*/
+
+  /*public apexBusinessRules(): ApexBarSeries {
+    const result = new ApexBarSeries();
+    result.xaxis.categories = ['Bsn', 'Medical', 'Legal'];
+    result.series = [
+      {
+        name: 'Secure',
+        data: [0, 0, 0]
+      },
+      {
+        name: 'Normal',
+        data: [0, 0, 0]
+      }
+    ];
+
+    for (let i = 0; i < 1000; i++) {
+
+      const type = this.randomGen(0, 1);
+      const category = this.randomGen(0, 2);
+      result.series[type].data[category] += 1;
+    }
+
+    return result;
+  }
+
+  public apexSparkline(min, max, total): void {
+    const result = new ApexBarSeries();
+    result.series.push({
+        data: []
+    });
+
+    for (let i = 0; i < total; i++) {
+      result.series[0].data.push(this.randomGen(min, max));
+    }
+
+    return result;
+  }*/
+
+  /*
+  {
+    "send_date": "02/12/2019",
+    "is_sent_securely": "Veilig verzonden",
+    "is_sensitive": "Niet gevoelig",
+    "classification": "",
+    "is_internal_recipient": "Externe ontvanger",
+    "recipient_domain": "voorbeeld-domein-vijf.nl",
+    "recipient_type": "Gastontvanger",
+    "verification_method": "Verificatie email",
+    "is_read": "Geopend",
+    "sending_organizational_unit": "Team 1"
+  },
+  */
+  public sentSecurely(graphData: ApexOptions, sensitiveOnly?: boolean, domain?: boolean): ApexOptions {
+
+    const localMockData = mockData;
+    const filteredLocalMockData = localMockData.filter(el => el.is_sensitive === 'Gevoelig' && el.classification !== '');
+
+    // this one doesn't need graphData as no new Xaxis category values are assigned, think its the better way.
+    if (domain) {
+      const uniqueDomains = [...new Set(filteredLocalMockData.map(item => item.recipient_domain))];
+      const uniqueSecure = [...new Set(filteredLocalMockData.map(item => item.is_sent_securely))];
+      // need to make type
+      const defaultData = uniqueDomains.map(item => {
+        return {
+          x: item,
+          y: 0
+        };
+      });
+
+      const series = uniqueSecure.map(item => {
+        return {
+          name: item,
+          data: defaultData.map(el => ({...el}))
+        };
+      });
+
+      const domainResult = {
+        series
+      };
+
+      filteredLocalMockData.forEach(obj => {
+        const secureIndex = domainResult.series.findIndex(el => el.name === obj.is_sent_securely);
+        const domainIndex = domainResult.series[secureIndex].data.findIndex(el => el.x === obj.recipient_domain);
+        domainResult.series[secureIndex].data[domainIndex].y += 1;
+      });
+
+      const sums = domainResult.series.reduce(
+        (s, r) => (r.data.forEach(obj => s[obj.x] = (s[obj.x] || 0) + obj.y), s),
+        {} as Record<string, number>
+      );
+
+      domainResult.series.forEach(v => v.data.sort((a, b) => sums[b.x] - sums[a.x]));
+
+      return domainResult as ApexOptions;
+    }
+
+    if (sensitiveOnly) {
+      const uniqueClassifications = [...new Set(filteredLocalMockData.map(item => {
+          if (item.classification.includes('BSN')) {
+            return 'BSN';
+          } else {
+            return item.classification;
+          }
+        }))];
+      const uniqueSecure = [...new Set(filteredLocalMockData.map(item => item.is_sent_securely))];
+      const defaultData = uniqueClassifications.map(() => {
+        return 0;
+      });
+      const series = uniqueSecure.map(item => {
+        return {
+          name: item,
+          data: [...defaultData]
+        };
+      }) as ApexSeriesData[];
+      const classificationsResult = {
+        series,
+        xaxis: {
+          ...graphData.xaxis,
+          categories: uniqueClassifications
+        }
+      };
+
+      filteredLocalMockData.forEach(obj => {
+        const secure = classificationsResult.series.findIndex(el => el.name === obj.is_sent_securely);
+        const classificationCheck = obj.classification.includes('BSN') ? 'BSN' : obj.classification;
+        const classificationIndex = classificationsResult.xaxis.categories.indexOf(classificationCheck);
+        classificationsResult.series[secure].data[classificationIndex] += 1;
+      });
+
+      return classificationsResult as ApexOptions;
+
+    } else {
+      const uniqueSensitive = [...new Set(localMockData.map(item => item.is_sensitive))];
+      const uniqueSecure = [...new Set(localMockData.map(item => item.is_sent_securely))];
+      const defaultData = uniqueSensitive.map(() => {
+        return 0;
+      });
+      const series = uniqueSecure.map(item => {
+        return {
+          name: item,
+          data: [...defaultData]
+        };
+      }) as ApexSeriesData[];
+
+      const sensitiveResult = {
+        series,
+        xaxis: {
+          ...graphData.xaxis,
+          categories: uniqueSensitive
+        }
+      };
+
+      localMockData.forEach(obj => {
+        const sensitive = sensitiveResult.xaxis.categories.indexOf(obj.is_sensitive);
+        const secure = sensitiveResult.series.findIndex(el => el.name === obj.is_sent_securely);
+        sensitiveResult.series[secure].data[sensitive] += 1;
+      });
+
+      return sensitiveResult as ApexOptions;
+    }
+  }
+
+  public twoFactorData(filter?: boolean): ApexOptions {
+
+    const chartData = {
+      title: {
+        align: 'center',
+        text: '% of messages sent to recipients with and without ZIVVER accounts',
+        style: {
+          fontSize: '16px'
+        }
+      } as ApexTitleSubtitle,
+      xaxis: {
+        title: {
+          text: '% of sent ZIVVER messages'
+        }
+      } as ApexXAxis,
+      yaxis: {
+        show: false,
+        labels: {
+          show: false
+        }
+      } as ApexYAxis
+    } as ApexOptions;
+
+    // Filter out data where we don't know the recipient
+    const localMockData = filter ? this.filteredDataSet.filter(el => el.recipient_type !== '') :
+    mockData.filter(el => el.recipient_type !== '');
+    const recipientType = [...new Set(localMockData.map(item => item.recipient_type))];
+    const series = recipientType.map(recipient => {
+      return {
+        name: recipient,
+        data: [0]
+      };
+    }) as ApexSeriesData[];
+    const processedResult = {
+      ...chartData,
+      series
+    };
+
+    localMockData.forEach(obj => {
+      const recipientIndex = processedResult.series.findIndex(el => el.name === obj.recipient_type);
+      processedResult.series[recipientIndex].data[0] += 1;
+    });
+
+    return this.twoFactorDataSet = processedResult as ApexOptions;
+  }
+
+  public verificationMethodData(filter?: boolean): ApexOptions {
+
+    const chartData = {
+      title: {
+        align: 'center',
+        text: 'Verification methods used for guest recipients',
+        style: {
+          fontSize: '16px'
+        }
+      } as ApexTitleSubtitle,
+      xaxis: {
+        title: {
+          text: '% of ZIVVER messages sent to guest recipients'
+        }
+      } as ApexXAxis,
+      yaxis: {
+        show: false,
+        labels: {
+          show: false
+        }
+      } as ApexYAxis
+    } as ApexOptions;
+
+    // Filtering data to only guests
+    const localMockData = filter ? this.filteredDataSet.filter(el => el.recipient_type === 'Gastontvanger') :
+      mockData.filter(el => el.recipient_type === 'Gastontvanger');
+
+    // new set based on verification methods, makes sure to only get unique instances.
+    const verificationMethods = [...new Set(localMockData.map(item => item.verification_method))];
+
+    // new instance of series with each unique verification method
+    const series = verificationMethods.map(method => {
+      return {
+        name: method,
+        data: [0]
+      };
+    }) as ApexSeriesData[];
+
+    // setting up a new object for the processed result
+    const processedResult = {
+      ...chartData,
+      series
+    };
+
+    localMockData.forEach(obj => {
+      const methodIndex = processedResult.series.findIndex(el => el.name === obj.verification_method);
+      processedResult.series[methodIndex].data[0] += 1;
+    });
+
+    return this.verificationMethodsDataSet = processedResult as ApexOptions;
+  }
+
+  public domainData(filter?: boolean): ApexOptions {
+
+    const chartData = {
+      title: {
+        align: 'center',
+        text: 'Number of ZIVVER messages sent and % opened, by recipient domains',
+        style: {
+          fontSize: '16px'
+        }
+      } as ApexTitleSubtitle,
+      xaxis: {
+        title: {
+          text: 'Number of ZIVVER messages sent to domain'
+        }
+      } as ApexXAxis,
+      yaxis: {
+        title: {
+          text: 'Recipient domain'
+        }
+      } as ApexYAxis
+    } as ApexOptions;
+
+    // Filtering data to only guests
+    const localMockData = filter ? this.filteredDataSet : mockData;
+
+    // const localMockData = mockData.filter(obj => obj.is_read !== '');
+    const uniqueDomains = [...new Set(localMockData.map(obj => obj.recipient_domain))];
+    const uniqueRead = [...new Set(localMockData.map(obj => obj.is_read === '' ? 'Unknown' : obj.is_read))];
+    // need to make type
+    const defaultData = uniqueDomains.map(item => {
+      return {
+        x: item,
+        y: 0
+      };
+    });
+
+    const series = uniqueRead.map(item => {
+      return {
+        name: item,
+        data: defaultData.map(el => ({...el})) // this creates a deep copy so the reference is new.
+      };
+    });
+
+    const domainResult = {
+      ...chartData,
+      series
+    };
+
+    localMockData.forEach(obj => {
+      const readIndex = domainResult.series.findIndex(el => el.name === obj.is_read || (el.name === 'Unknown' && obj.is_read === ''));
+      const domainIndex = domainResult.series[readIndex].data.findIndex(el => el.x === obj.recipient_domain);
+      domainResult.series[readIndex].data[domainIndex].y += 1;
+    });
+
+    const sums = domainResult.series.reduce(
+      (s, r) => (r.data.forEach(obj => s[obj.x] = (s[obj.x] || 0) + obj.y), s), {} as Record<string, number>
+    );
+
+    domainResult.series.forEach(v => v.data.sort((a, b) => sums[b.x] - sums[a.x]));
+
+    return this.domainDataSet = domainResult as ApexOptions;
   }
 }
 
-export interface DataStructure {
-  name: string;
-  series: ArrayData[];
-}
-
-export interface ArrayData {
-  name: string;
-  value: number;
-}
-
-export interface MultiDataArr {
-  name: string;
-  min: number;
-  max: number;
-}
-
-export class ApexBarSeries {
-  series: ApexSeriesData[] = [];
-  xaxis?: ApexXAxis = {};
-  yaxis?: ApexYAxis = {};
-
-  constructor() {}
-}
-
 export interface ApexSeriesData {
-  name: string;
+  name?: string;
   data: number[];
 }
-
-/* Data example
-   {
-     "KEY_MESSAGE":"20a3804f27917719e63f139e65242b970bd0513ebc4ca3f77f6fb5a2d69c7786",
-     "KEY_ACCOUNT_RECIPIENT":"b7b68620b602335dccf8b709704ab6fac0912213b7c25005499ae152b84a40f3",
-     "SENT_AT":"2019-12-03T22:13:58.661+01:00",
-     "IS_INTERNAL_RECIPIENT":0,
-     "RECIPIENT_TYPE":"Guest",
-     "VERIFICATION_METHOD":"Email",
-     "RECIPIENT_DOMAIN":"rentawarroom.nl",
-     "IS_OPENED":0
-   },
-   */
