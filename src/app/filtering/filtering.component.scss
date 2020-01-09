@@ -1,8 +1,14 @@
-.button-row {
+form {
   display: flex;
   justify-content: space-between;
 
-  .export {
-    align-self: flex-end;
+  mat-form-field {
+    margin-right: 32px;
+  }
+
+  .form-buttons {
+    :first-child {
+      margin-right: 16px;
+    }
   }
 }

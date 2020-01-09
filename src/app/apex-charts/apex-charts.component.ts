@@ -1,4 +1,6 @@
+import { MatDialog } from '@angular/material';
 import { Component, OnInit } from '@angular/core';
+import { ExportDialogComponent } from '../export-dialog/export-dialog.component';
 
 @Component({
   selector: 'app-apex-charts',
@@ -7,9 +9,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ApexChartsComponent implements OnInit {
 
-  constructor() { }
+  constructor(private dialog: MatDialog) { }
 
   ngOnInit() {
   }
 
+
+  public openDialog() {
+    this.dialog.open(ExportDialogComponent, {
+      width: '400px'
+    });
+  }
 }

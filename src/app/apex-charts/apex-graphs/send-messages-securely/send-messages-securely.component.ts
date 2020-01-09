@@ -22,7 +22,6 @@ export class SendMessagesSecurelyComponent implements OnInit {
       height: 450,
       stacked: true,
       type: 'bar',
-      width: 600
     },
     colors: ['#0B74E7', '#003668', '#00A9E0', '#E6F7FC'],
     plotOptions: {
@@ -42,85 +41,24 @@ export class SendMessagesSecurelyComponent implements OnInit {
       x: {
         show: false
       }
+    },
+    noData: {
+      text: 'No data Available',
+      align: 'center',
+      verticalAlign: 'middle'
     }
   };
-
-  public messageClassificationChart = {
-    title: {
-      align: 'center',
-      text: 'Number of emails and % sent securely, by message classification',
-      style: {
-        fontSize: '16px'
-      }
-    } as ApexTitleSubtitle,
-    xaxis: {
-      title: {
-        text: 'Number of emails'
-      }
-    } as ApexXAxis,
-    yaxis: {
-      title: {
-        text: 'Message classification'
-      }
-    } as ApexYAxis
-  } as ApexOptions;
-
-  public triggeredBusinessRulesChart = {
-    title: {
-      align: 'center',
-      text: 'Number of emails and % sent securely, by triggered business rule',
-      style: {
-        fontSize: '16px'
-      }
-    } as ApexTitleSubtitle,
-    xaxis: {
-      title: {
-        text: 'Number of emails classified as sensitive'
-      }
-    } as ApexXAxis,
-    yaxis: {
-      title: {
-        text: 'Triggered business rule'
-      }
-    } as ApexYAxis
-  } as ApexOptions;
-
-  public recipientDomainChart = {
-    title: {
-      align: 'center',
-      text: 'Number of emails and % sent securely, by top 10 recipient domains',
-      style: {
-        fontSize: '16px'
-      }
-    } as ApexTitleSubtitle,
-    xaxis: {
-      title: {
-        text: 'Number of emails classified as sensitive'
-      }
-    } as ApexXAxis,
-    yaxis: {
-      title: {
-        text: 'Recipient domain'
-      }
-    } as ApexYAxis
-  } as ApexOptions;
 
   public messageClassificationData: ApexOptions;
   public triggeredBusinessRulesData: ApexOptions;
   public recipientDomainData: ApexOptions;
 
-  constructor(private dataService: DataService) {
+  constructor(public dataService: DataService) {
   }
 
   ngOnInit() {
-    this.messageClassificationData = this.dataService.sentSecurely(this.messageClassificationChart);
-    this.messageResult = {...this.messageClassificationChart, ...this.messageClassificationData};
-
-    this.triggeredBusinessRulesData = this.dataService.sentSecurely(this.triggeredBusinessRulesChart, true);
-    this.triggeredResult = {...this.triggeredBusinessRulesChart, ...this.triggeredBusinessRulesData};
-
-    this.recipientDomainData = this.dataService.sentSecurely(this.recipientDomainChart, undefined, true);
-    this.domainResult = {...this.recipientDomainChart, ...this.recipientDomainData};
-    console.log(this.domainResult);
+    this.dataService.secureDomainData();
+    this.dataService.messageClassificationData();
+    this.dataService.triggeredBusinessRulesData();
   }
 }

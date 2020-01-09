@@ -1,0 +1,109 @@
+@import '~@angular/material/theming';
+@include mat-core();
+
+$md-primary: (
+    50 : #e2eefc,
+    100 : #b6d5f8,
+    200 : #85baf3,
+    300 : #549eee,
+    400 : #3089eb,
+    500 : #0b74e7,
+    600 : #0a6ce4,
+    700 : #0861e0,
+    800 : #0657dd,
+    900 : #0344d7,
+    A100 : #fefeff,
+    A200 : #cbd8ff,
+    A400 : #98b2ff,
+    A700 : #7f9fff,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #000000,
+        400 : #ffffff,
+        500 : #ffffff,
+        600 : #ffffff,
+        700 : #ffffff,
+        800 : #ffffff,
+        900 : #ffffff,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #000000,
+        A700 : #000000,
+    )
+);
+
+$md-accent: (
+    50 : #e0e7ed,
+    100 : #b3c3d2,
+    200 : #809bb4,
+    300 : #4d7295,
+    400 : #26547f,
+    500 : #003668,
+    600 : #003060,
+    700 : #002955,
+    800 : #00224b,
+    900 : #00163a,
+    A100 : #7096ff,
+    A200 : #3d70ff,
+    A400 : #0a4aff,
+    A700 : #003ff0,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #ffffff,
+        400 : #ffffff,
+        500 : #ffffff,
+        600 : #ffffff,
+        700 : #ffffff,
+        800 : #ffffff,
+        900 : #ffffff,
+        A100 : #000000,
+        A200 : #ffffff,
+        A400 : #ffffff,
+        A700 : #ffffff,
+    )
+);
+
+$md-warn: (
+    50 : #fce4e8,
+    100 : #f8bbc6,
+    200 : #f48da1,
+    300 : #ef5f7b,
+    400 : #eb3d5e,
+    500 : #e81b42,
+    600 : #e5183c,
+    700 : #e21433,
+    800 : #de102b,
+    900 : #d8081d,
+    A100 : #ffffff,
+    A200 : #ffcfd2,
+    A400 : #ff9ca3,
+    A700 : #ff828b,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #000000,
+        400 : #ffffff,
+        500 : #ffffff,
+        600 : #ffffff,
+        700 : #ffffff,
+        800 : #ffffff,
+        900 : #ffffff,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #000000,
+        A700 : #000000,
+    )
+);
+
+$rocket-blue: mat-palette($md-primary);
+$midnight-blue: mat-palette($md-accent);
+$lava-red: mat-palette($md-warn);
+
+$zivver-theme: mat-light-theme($rocket-blue, $midnight-blue, $lava-red);
+
+@include angular-material-theme($zivver-theme);

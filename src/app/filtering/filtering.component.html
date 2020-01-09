@@ -1,25 +1,39 @@
-<div>
-  <form [formGroup]="form" novalidate>
+<form [formGroup]="form" novalidate>
+  <div>
     <mat-form-field>
-      <input matInput [matDatepicker]="picker1" placeholder="Choose a date" formControlName="startDate">
+      <input
+        matInput
+        [matDatepicker]="picker1"
+        placeholder="Choose a date to filter from"
+        formControlName="startDate"
+      />
       <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
       <mat-datepicker #picker1></mat-datepicker>
     </mat-form-field>
     <mat-form-field>
-      <input matInput [matDatepicker]="picker2" placeholder="Choose a date" formControlName="endDate">
+      <input
+        matInput
+        [matDatepicker]="picker2"
+        placeholder="Choose a date to filter to"
+        formControlName="endDate"
+      />
       <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
       <mat-datepicker #picker2></mat-datepicker>
     </mat-form-field>
-  </form>
-</div>
-<div class="button-row">
-  <div>
-    <button mat-raised-button (click)="filterData()">Apply Filters</button>
+    <mat-form-field>
+      <mat-label>Organizational Unit</mat-label>
+      <mat-select formControlName="organization">
+        <mat-option
+          *ngFor="let organization of organizationUnits"
+          [value]="organization"
+        >
+          {{ organization }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div class="form-buttons">
+    <button mat-raised-button color="primary" (click)="filterData()">Apply Filters</button>
     <button mat-raised-button (click)="resetData()">Reset</button>
   </div>
-  <div class="export">
-    <button mat-raised-button (click)="exportData()">Export Raw Data</button>
-  </div>
-</div>
-
-
+</form>

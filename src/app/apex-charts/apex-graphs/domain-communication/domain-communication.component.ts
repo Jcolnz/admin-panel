@@ -16,7 +16,6 @@ export class DomainCommunicationComponent implements OnInit {
       height: 450,
       stacked: true,
       type: 'bar',
-      width: 600
     },
     colors: ['#0B74E7', '#003668', '#00A9E0', '#E6F7FC'],
     plotOptions: {
@@ -36,6 +35,11 @@ export class DomainCommunicationComponent implements OnInit {
       x: {
         show: false
       }
+    },
+    noData: {
+      text: 'No data Available',
+      align: 'center',
+      verticalAlign: 'middle'
     }
   };
 

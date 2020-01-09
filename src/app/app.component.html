@@ -1,21 +1,47 @@
-
-<router-outlet></router-outlet>
-<mat-toolbar class="example-header">PoC Example Dashboard</mat-toolbar>
+<mat-toolbar class="header">
+  <mat-toolbar-row>
+    <img src="../assets/Zivver_BLUE_RGB.png"/> 
+    <span class="header-text">Data Dashboard Demo</span>
+    <span class="example-spacer"></span>
+    
+    <span class="person">
+      <button mat-icon-button [matMenuTriggerFor]="menu">
+        <span>J</span>
+      </button>
+    </span>
+    <mat-menu #menu="matMenu">
+      <a mat-menu-item href="https://app.zivver.com">
+        <mat-icon class="log">exit_to_app</mat-icon>
+        <span>Log out</span>
+      </a>
+    </mat-menu>
+  </mat-toolbar-row>
+</mat-toolbar>
 
 <mat-sidenav-container class="example-container">
-  <mat-sidenav #sidenav mode="side" opened class="example-sidenav">
+  <mat-sidenav #sidenav mode="side" opened class="sidenav">
     <nav>
-        <a mat-button routerLink="/ngx-charts" routerLinkActive="active">NGX Charts</a>
-        <a mat-button routerLink="/apex-charts" routerLinkActive="active">Apex Charts</a>
-        <a mat-button routerLink="/ng2-charts" routerLinkActive="active">Ng2 Charts</a>
+        <a mat-button>
+          <mat-icon fontSet="material-icons-outlined">home_outline</mat-icon> 
+          <span>Analytics Homepage</span>
+        </a>
+        <a mat-button>
+          <mat-icon fontSet="material-icons-outlined">account_circle</mat-icon> 
+          <span>Another link</span>
+        </a>
+        <a class="title">MORE LINKS</a>
+        <a mat-button>
+          <mat-icon fontSet="material-icons-outlined">speed</mat-icon> 
+          <span>Yet another link</span>
+        </a>
+        <a mat-button>
+          <mat-icon fontSet="material-icons-outlined">mail</mat-icon> 
+          <span>Final link</span>
+        </a>
     </nav>
   </mat-sidenav>
 
   <mat-sidenav-content>
-    <div style="margin-left: 100px; margin-right: 100px;">
       <router-outlet></router-outlet>
-    </div>
   </mat-sidenav-content>
 </mat-sidenav-container>
-
-<mat-toolbar class="example-footer">Footer</mat-toolbar>

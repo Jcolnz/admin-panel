@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
 import {ApexOptions, ApexTitleSubtitle, ApexXAxis, ApexYAxis} from 'ng-apexcharts';
-import * as data from './data';
 import {mockData} from './mock-data';
 
 @Injectable({
@@ -8,169 +7,49 @@ import {mockData} from './mock-data';
 })
 export class DataService {
 
-  public filteredDataSet: any;
+  public filteredDataSet: MockData[];
   public twoFactorDataSet: ApexOptions;
   public verificationMethodsDataSet: ApexOptions;
   public domainDataSet: ApexOptions;
+  public secureDomainDataSet: ApexOptions;
+  public messageClassificationDataSet: ApexOptions;
+  public triggeredBusinessRulesDataSet: ApexOptions;
 
   constructor() {
   }
 
   /* ----------- FILTERING ---------- */
-  public filterData(startDate?, endDate?) {
+  public filterData(startDate?, endDate?, organizationUnit?: string) {
+    
+    const localStartDate = startDate ? startDate.toISOString().slice(0, 10) : undefined;
+    const localEndDate = endDate ? endDate.toISOString().slice(0, 10) : undefined;
+
     this.filteredDataSet = mockData.filter(obj => {
-      const objDate = new Date(obj.send_date);
-      return objDate >= startDate && objDate <= endDate;
-    });
+      if (organizationUnit) {
+          if (obj.sending_organizational_unit === organizationUnit) {
+            if (localStartDate && localEndDate) {
+              const dateParts = obj.send_date.split('/');
+              const objDate = new Date(+dateParts[2], +dateParts[1] - 1, +dateParts[0]).toISOString().slice(0, 10);
+              return objDate >= localStartDate && objDate <= localEndDate;
+            } else {
+              return obj;
+            }
+          }
+      } else {
+        const dateParts = obj.send_date.split('/');
+        const objDate = new Date(+dateParts[2], +dateParts[1] - 1, +dateParts[0]).toISOString().slice(0, 10);
+        return objDate >= localStartDate && objDate <= localEndDate;
+      }
+    }) as MockData[];
+    console.log(this.filteredDataSet);
     this.twoFactorData(true);
     this.verificationMethodData(true);
     this.domainData(true);
+    this.secureDomainData(true);
+    this.messageClassificationData(true);
+    this.triggeredBusinessRulesData(true);
   }
   /* ----------- FILTERING ---------- */
-
-  /* ----------- APEX DATA GENERATION ---------- */
-
-  /*public apexGroupedBarData(): ApexBarSeries {
-    return {
-      series: [
-        {
-          name: 'SENT_MESSAGES',
-          data: [197, 348, 359, 351]
-        },
-        {
-          name: 'RECEIVED_MESSAGES',
-          data: [285, 424, 414, 442]
-        },
-        {
-          name: 'READ_MESSAGES',
-          data: [256, 389, 394, 396]
-        },
-        {
-          name: 'INTERNAL_MESSAGES',
-          data: [178, 268, 286, 299]
-        }],
-      xaxis: {
-        categories: ['2019-01-07', '2019-01-14', '2019-01-21', '2019-01-28']
-      }
-    };
-  }*/
-
-  /*public apex2faData(filteredData?): ApexBarSeries {
-    const result = new ApexBarSeries();
-    result.xaxis = {
-      title: {
-        text: '% of sent ZIVVER messages'
-      }
-    };
-
-    let rawData = data.rawData;
-
-    if (filteredData) {
-      rawData = filteredData;
-    }
-
-    rawData.forEach(obj => {
-      const recipient = obj.RECIPIENT_TYPE;
-      const existingEl = result.series.find(({ name }) => name === recipient) as ApexSeriesData;
-      existingEl !== undefined ? existingEl.data[0] += 1 : result.series.push({ name: recipient, data: [1] });
-    });
-
-    console.log(result);
-    return this.apex2faTest = result;
-  }*/
-
-  /*apexVerificationData(filteredData?): ApexBarSeries {
-    const result = new ApexBarSeries();
-    let rawData = data.rawData;
-
-    if (filteredData) {
-      rawData = filteredData;
-    }
-
-    // need to remove zivver && personal and orgazantional access code seperate
-    rawData.forEach(obj => {
-      const method = obj.VERIFICATION_METHOD;
-      // if (method === 'Organization Access Code' || method === 'Personal Access Code' || method === 'Generated Code') {
-      //  method = 'Access Code';
-      // }
-      const existingObj = result.series.find(({ name }) => name === method) as ApexSeriesData;
-      existingObj !== undefined ? existingObj.data[0] += 1 : result.series.push({ name: method, data: [1] });
-    });
-
-    return result;
-  }*/
-
-  /*public apexDomainData(): ApexBarSeries {
-    const result = new ApexBarSeries();
-    const domainsList = ['gmail.com', 'hotmail.com', 'connect4care.nl', 'veenendaal.nl'];
-    // const domainsList = [...new Set(data.rawData.map(obj => obj.RECIPIENT_DOMAIN))]; // becomes x
-    result.series = [
-      {
-        name: 'Unopened',
-        data: []
-      },
-      {
-        name: 'Opened',
-        data: []
-      },
-    ];
-
-    data.rawData.forEach(obj => {
-      const currentDomainIndex = domainsList.findIndex(domain => domain === obj.RECIPIENT_DOMAIN);
-      if (obj.RECIPIENT_DOMAIN === 'gmail.com' || obj.RECIPIENT_DOMAIN === 'hotmail.com' ||
-        obj.RECIPIENT_DOMAIN === 'connect4care.nl' || obj.RECIPIENT_DOMAIN === 'veenendaal.nl') {
-        if (obj.IS_OPENED === 1) {
-          result.series[1].data[currentDomainIndex] !== undefined ? result.series[1].data[currentDomainIndex] += 1 :
-            result.series[1].data[currentDomainIndex] = 1;
-        } else {
-          result.series[0].data[currentDomainIndex] !== undefined ? result.series[0].data[currentDomainIndex] += 1 :
-            result.series[0].data[currentDomainIndex] = 1;
-        }
-      }
-    });
-
-    result.xaxis.categories = ['gmail.com', 'hotmail.com', 'connect4care.nl', 'veenendaal.nl'];
-    // result.xaxis.categories = domainsList;
-
-    return result;
-  }*/
-
-  /*public apexBusinessRules(): ApexBarSeries {
-    const result = new ApexBarSeries();
-    result.xaxis.categories = ['Bsn', 'Medical', 'Legal'];
-    result.series = [
-      {
-        name: 'Secure',
-        data: [0, 0, 0]
-      },
-      {
-        name: 'Normal',
-        data: [0, 0, 0]
-      }
-    ];
-
-    for (let i = 0; i < 1000; i++) {
-
-      const type = this.randomGen(0, 1);
-      const category = this.randomGen(0, 2);
-      result.series[type].data[category] += 1;
-    }
-
-    return result;
-  }
-
-  public apexSparkline(min, max, total): void {
-    const result = new ApexBarSeries();
-    result.series.push({
-        data: []
-    });
-
-    for (let i = 0; i < total; i++) {
-      result.series[0].data.push(this.randomGen(min, max));
-    }
-
-    return result;
-  }*/
 
   /*
   {
@@ -186,114 +65,188 @@ export class DataService {
     "sending_organizational_unit": "Team 1"
   },
   */
-  public sentSecurely(graphData: ApexOptions, sensitiveOnly?: boolean, domain?: boolean): ApexOptions {
+  public triggeredBusinessRulesData(filter?: boolean): ApexOptions {
 
-    const localMockData = mockData;
-    const filteredLocalMockData = localMockData.filter(el => el.is_sensitive === 'Gevoelig' && el.classification !== '');
+    const chartData = {
+      title: {
+        align: 'center',
+        text: 'Number of emails and % sent securely, by triggered business rule',
+        style: {
+          fontSize: '16px'
+        }
+      } as ApexTitleSubtitle,
+      xaxis: {
+        title: {
+          text: 'Number of emails classified as sensitive'
+        }
+      } as ApexXAxis,
+      yaxis: {
+        min: 0,
+        forceNiceScale: true,
+        title: {
+          text: 'Triggered business rule'
+        }
+      } as ApexYAxis
+    } as ApexOptions;
 
+    const localMockData = filter ? this.filteredDataSet.filter(el => el.is_sensitive === 'Gevoelig' && el.classification !== '') :
+      mockData.filter(el => el.is_sensitive === 'Gevoelig' && el.classification !== '');
+    const uniqueClassifications = [...new Set(localMockData.map(item => {
+        if (item.classification.includes('BSN')) {
+          return 'BSN';
+        } else {
+          return item.classification;
+        }
+      }))];
+    const uniqueSecure = [...new Set(localMockData.map(item => item.is_sent_securely))];
+    const defaultData = uniqueClassifications.map(() => {
+      return 0;
+    });
+    const series = uniqueSecure.map(item => {
+      return {
+        name: item,
+        data: [...defaultData]
+      };
+    }) as ApexSeriesData[];
+    const classificationsResult = {
+      ...chartData,
+      series,
+      xaxis: {
+        ...chartData.xaxis,
+        categories: uniqueClassifications
+      }
+    };
+
+    localMockData.forEach(obj => {
+      const secure = classificationsResult.series.findIndex(el => el.name === obj.is_sent_securely);
+      const classificationCheck = obj.classification.includes('BSN') ? 'BSN' : obj.classification;
+      const classificationIndex = classificationsResult.xaxis.categories.indexOf(classificationCheck);
+      classificationsResult.series[secure].data[classificationIndex] += 1;
+    });
+
+    return this.triggeredBusinessRulesDataSet = classificationsResult as ApexOptions;
+  }
+
+  /***
+   * Method uses deliberately defined xaxis as opposed to dual axis data structure.
+   */
+  public messageClassificationData(filter?: boolean): ApexOptions {
+
+    const chartData = {
+      title: {
+        align: 'center',
+        text: 'Number of emails and % sent securely, by message classification',
+        style: {
+          fontSize: '16px'
+        }
+      } as ApexTitleSubtitle,
+      xaxis: {
+        title: {
+          text: 'Number of emails'
+        }
+      } as ApexXAxis,
+      yaxis: {
+        title: {
+          text: 'Message classification'
+        }
+      } as ApexYAxis
+    } as ApexOptions;
+
+    // Filtering data to only guests
+    const localMockData = filter ? this.filteredDataSet : mockData;
+
+    const uniqueSensitive = [...new Set(localMockData.map(item => item.is_sensitive))];
+    const uniqueSecure = [...new Set(localMockData.map(item => item.is_sent_securely))];
+    const defaultData = uniqueSensitive.map(() => {
+      return 0;
+    });
+    const series = uniqueSecure.map(item => {
+      return {
+        name: item,
+        data: [...defaultData]
+      };
+    }) as ApexSeriesData[];
+
+    const sensitiveResult = {
+      ...chartData,
+      series,
+      xaxis: {
+        ...chartData.xaxis,
+        categories: uniqueSensitive
+      }
+    };
+
+    localMockData.forEach(obj => {
+      const sensitive = sensitiveResult.xaxis.categories.indexOf(obj.is_sensitive);
+      const secure = sensitiveResult.series.findIndex(el => el.name === obj.is_sent_securely);
+      sensitiveResult.series[secure].data[sensitive] += 1;
+    });
+
+    return this.messageClassificationDataSet = sensitiveResult as ApexOptions;
+  }
+
+  public secureDomainData(filter?: boolean): ApexOptions {
+
+    const chartData = {
+      title: {
+        align: 'center',
+        text: 'Number of emails and % sent securely, by top 10 recipient domains',
+        style: {
+          fontSize: '16px'
+        }
+      } as ApexTitleSubtitle,
+      xaxis: {
+        title: {
+          text: 'Number of emails classified as sensitive'
+        }
+      } as ApexXAxis,
+      yaxis: {
+        title: {
+          text: 'Recipient domain'
+        }
+      } as ApexYAxis
+    } as ApexOptions;
+
+    // Filtering data to only guests
+    const localMockData = filter ? this.filteredDataSet.filter(el => el.is_sensitive === 'Gevoelig' && el.classification !== '') :
+      mockData.filter(el => el.is_sensitive === 'Gevoelig' && el.classification !== '');
     // this one doesn't need graphData as no new Xaxis category values are assigned, think its the better way.
-    if (domain) {
-      const uniqueDomains = [...new Set(filteredLocalMockData.map(item => item.recipient_domain))];
-      const uniqueSecure = [...new Set(filteredLocalMockData.map(item => item.is_sent_securely))];
-      // need to make type
-      const defaultData = uniqueDomains.map(item => {
-        return {
-          x: item,
-          y: 0
-        };
-      });
-
-      const series = uniqueSecure.map(item => {
-        return {
-          name: item,
-          data: defaultData.map(el => ({...el}))
-        };
-      });
-
-      const domainResult = {
-        series
+    const uniqueDomains = [...new Set(localMockData.map(item => item.recipient_domain))];
+    const uniqueSecure = [...new Set(localMockData.map(item => item.is_sent_securely))];
+    // need to make type
+    const defaultData = uniqueDomains.map(item => {
+      return {
+        x: item,
+        y: 0
       };
+    });
 
-      filteredLocalMockData.forEach(obj => {
-        const secureIndex = domainResult.series.findIndex(el => el.name === obj.is_sent_securely);
-        const domainIndex = domainResult.series[secureIndex].data.findIndex(el => el.x === obj.recipient_domain);
-        domainResult.series[secureIndex].data[domainIndex].y += 1;
-      });
-
-      const sums = domainResult.series.reduce(
-        (s, r) => (r.data.forEach(obj => s[obj.x] = (s[obj.x] || 0) + obj.y), s),
-        {} as Record<string, number>
-      );
-
-      domainResult.series.forEach(v => v.data.sort((a, b) => sums[b.x] - sums[a.x]));
-
-      return domainResult as ApexOptions;
-    }
-
-    if (sensitiveOnly) {
-      const uniqueClassifications = [...new Set(filteredLocalMockData.map(item => {
-          if (item.classification.includes('BSN')) {
-            return 'BSN';
-          } else {
-            return item.classification;
-          }
-        }))];
-      const uniqueSecure = [...new Set(filteredLocalMockData.map(item => item.is_sent_securely))];
-      const defaultData = uniqueClassifications.map(() => {
-        return 0;
-      });
-      const series = uniqueSecure.map(item => {
-        return {
-          name: item,
-          data: [...defaultData]
-        };
-      }) as ApexSeriesData[];
-      const classificationsResult = {
-        series,
-        xaxis: {
-          ...graphData.xaxis,
-          categories: uniqueClassifications
-        }
+    const series = uniqueSecure.map(item => {
+      return {
+        name: item,
+        data: defaultData.map(el => ({...el}))
       };
+    });
 
-      filteredLocalMockData.forEach(obj => {
-        const secure = classificationsResult.series.findIndex(el => el.name === obj.is_sent_securely);
-        const classificationCheck = obj.classification.includes('BSN') ? 'BSN' : obj.classification;
-        const classificationIndex = classificationsResult.xaxis.categories.indexOf(classificationCheck);
-        classificationsResult.series[secure].data[classificationIndex] += 1;
-      });
+    const processedResult = {
+      ...chartData,
+      series
+    };
 
-      return classificationsResult as ApexOptions;
+    localMockData.forEach(obj => {
+      const secureIndex = processedResult.series.findIndex(el => el.name === obj.is_sent_securely);
+      const domainIndex = processedResult.series[secureIndex].data.findIndex(el => el.x === obj.recipient_domain);
+      processedResult.series[secureIndex].data[domainIndex].y += 1;
+    });
 
-    } else {
-      const uniqueSensitive = [...new Set(localMockData.map(item => item.is_sensitive))];
-      const uniqueSecure = [...new Set(localMockData.map(item => item.is_sent_securely))];
-      const defaultData = uniqueSensitive.map(() => {
-        return 0;
-      });
-      const series = uniqueSecure.map(item => {
-        return {
-          name: item,
-          data: [...defaultData]
-        };
-      }) as ApexSeriesData[];
+    const sums = processedResult.series.reduce(
+      (s, r) => (r.data.forEach(obj => s[obj.x] = (s[obj.x] || 0) + obj.y), s),
+      {} as Record<string, number>
+    );
 
-      const sensitiveResult = {
-        series,
-        xaxis: {
-          ...graphData.xaxis,
-          categories: uniqueSensitive
-        }
-      };
+    processedResult.series.forEach(v => v.data.sort((a, b) => sums[b.x] - sums[a.x]));
 
-      localMockData.forEach(obj => {
-        const sensitive = sensitiveResult.xaxis.categories.indexOf(obj.is_sensitive);
-        const secure = sensitiveResult.series.findIndex(el => el.name === obj.is_sent_securely);
-        sensitiveResult.series[secure].data[sensitive] += 1;
-      });
-
-      return sensitiveResult as ApexOptions;
-    }
+    return this.secureDomainDataSet = processedResult as ApexOptions;
   }
 
   public twoFactorData(filter?: boolean): ApexOptions {
@@ -417,11 +370,11 @@ export class DataService {
     } as ApexOptions;
 
     // Filtering data to only guests
-    const localMockData = filter ? this.filteredDataSet : mockData;
+    const localMockData = filter ? this.filteredDataSet.filter(el => el.is_read !== '') : mockData.filter(el => el.is_read !== '');
 
     // const localMockData = mockData.filter(obj => obj.is_read !== '');
     const uniqueDomains = [...new Set(localMockData.map(obj => obj.recipient_domain))];
-    const uniqueRead = [...new Set(localMockData.map(obj => obj.is_read === '' ? 'Unknown' : obj.is_read))];
+    const uniqueRead = [...new Set(localMockData.map(obj => obj.is_read))];
     // need to make type
     const defaultData = uniqueDomains.map(item => {
       return {
@@ -443,7 +396,7 @@ export class DataService {
     };
 
     localMockData.forEach(obj => {
-      const readIndex = domainResult.series.findIndex(el => el.name === obj.is_read || (el.name === 'Unknown' && obj.is_read === ''));
+      const readIndex = domainResult.series.findIndex(el => el.name === obj.is_read);
       const domainIndex = domainResult.series[readIndex].data.findIndex(el => el.x === obj.recipient_domain);
       domainResult.series[readIndex].data[domainIndex].y += 1;
     });
@@ -456,9 +409,26 @@ export class DataService {
 
     return this.domainDataSet = domainResult as ApexOptions;
   }
+
+  get organizationUnits() {
+    return [...new Set(mockData.map(obj => obj.sending_organizational_unit))];
+  }
 }
 
 export interface ApexSeriesData {
   name?: string;
   data: number[];
+}
+
+export interface MockData {
+  send_date: string;
+  is_sent_securely: string;
+  is_sensitive: string;
+  classification: string;
+  is_internal_recipient: string;
+  recipient_domain: string;
+  recipient_type: string;
+  verification_method: string;
+  is_read: string;
+  sending_organizational_unit: string;
 }

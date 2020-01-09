@@ -1,11 +1,64 @@
 <!-- top row -->
-<app-apex-home-header-section></app-apex-home-header-section>
-<!-- /top row -->
-
-<!-- Main section -->
-<app-apex-home-middle-section></app-apex-home-middle-section>
+<div class="content">
+  <div class="container">
+    <div class="row">
+      <mat-card class="filter">
+        <mat-card-header>
+          <mat-card-title>Filtering</mat-card-title>
+          <mat-card-subtitle>Apply a filter to your data set</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <app-filtering></app-filtering>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="export">
+        <mat-card-header>
+          <mat-card-title>Export Data </mat-card-title>
+          <mat-card-subtitle>Data will be exported as a raw CSV file.</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <button mat-raised-button color="primary" (click)="openDialog()">Export Raw Data</button>
+        </mat-card-content>
+      </mat-card>
+      <!-- /top row -->
+    </div>
+    <!-- Main section -->
+    <div class="row">
+      <div class="graph">
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>
+              Does my organization send messages securely when necessary?
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <app-send-messages-securely></app-send-messages-securely>
+          </mat-card-content>
+        </mat-card>
+      </div>
+      <div class="graph">
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>
+              Does my organization use 2FA effectively?
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <app-two-fa></app-two-fa>
+          </mat-card-content>
+        </mat-card>
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>
+              With whom do we communicate and do they read our messages?
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <app-domain-communication></app-domain-communication>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+</div>
 <!-- /Main section -->
-
-<!-- Bottom section -->
-<app-apex-home-bottom-section></app-apex-home-bottom-section>
-<!-- /Bottom section -->

@@ -1,0 +1,8 @@
+<h1 mat-dialog-title>Export Raw Data</h1>
+<div mat-dialog-content>
+  <p>Download your raw data as a CSV file using the button below.</p>
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-button color="warn" (click)="close()">Close</button>
+  <a href="" target="_self" download="mock-data.csv" mat-raised-button color="primary" cdkFocusInitial (click)="download()">Download</a>
+</div>

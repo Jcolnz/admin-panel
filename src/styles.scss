@@ -1,20 +1,35 @@
 /* You can add global styles to this file, and also import other style files */
-@import '@angular/material/prebuilt-themes/deeppurple-amber.css';
+//@import '@angular/material/prebuilt-themes/deeppurple-amber.css';
+@import "theme.scss";
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 /* Structural Styling */
 .container {
-  padding: 16px;
+  padding: 40px;
 
   .row {
     display: flex;
-    justify-content: space-around;
-    margin-bottom: 32px;
+    flex-direction: row;
   }
 }
 
-.advanced-pie-legend {
-  line-height: 32px;
+mat-card {
+  border-radius: .25rem !important;
+  box-shadow: 0 0.5rem 1rem 0 rgba(44,51,73,.1) !important;
+}
+
+mat-card-header {
+  .mat-card-header-text {
+    margin: 0 !important;
+  }
+}
+
+button {
+  height: 40px;
+}
+
+.mat-menu-content {
+  width: 200px;
 }

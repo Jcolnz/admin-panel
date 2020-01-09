@@ -12,15 +12,12 @@ export class TwoFaComponent implements OnInit {
   @ViewChild('recipientsWithZIVVERAccount', {static: false}) recipientsWithZIVVERAccount: ChartComponent;
   @ViewChild('guestRecipientVerificationMethod', {static: false}) guestRecipientVerificationMethod: ChartComponent;
 
-  public recipientsWithZIVVERAccountData: ApexOptions;
-  public guestRecipientVerificationMethodData: ApexOptions;
   public chartOptions = {
     chartDetails: {
       height: 250,
       stacked: true,
       stackType: '100%',
-      type: 'bar',
-      width: 600
+      type: 'bar'
     },
     colors: ['#0B74E7', '#003668', '#00A9E0', '#E6F7FC'],
     plotOptions: {
@@ -40,6 +37,11 @@ export class TwoFaComponent implements OnInit {
       x: {
         show: false
       }
+    },
+    noData: {
+      text: 'No data Available',
+      align: 'center',
+      verticalAlign: 'middle'
     }
   };
 

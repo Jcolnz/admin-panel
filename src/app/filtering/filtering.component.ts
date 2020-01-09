@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {FormBuilder} from '@angular/forms';
+import {FormBuilder, Validators} from '@angular/forms';
 import {DataService} from '../data.service';
 
 @Component({
@@ -9,18 +9,21 @@ import {DataService} from '../data.service';
 })
 export class FilteringComponent implements OnInit {
 
-  form = this.fb.group({
-    startDate: [new Date()],
-    endDate: [new Date()]
+  public form = this.fb.group({
+    startDate: [new Date('10/1/2019')],
+    endDate: [new Date()],
+    organization: ['']
   });
+  public organizationUnits: string[] = [];
 
   constructor(private fb: FormBuilder, private dataService: DataService) { }
 
   ngOnInit() {
+    this.organizationUnits = this.dataService.organizationUnits;
   }
 
   public filterData(): void {
-    this.dataService.filterData(this.startDate, this.endDate);
+    this.dataService.filterData(this.startDate, this.endDate, this.organization);
   }
 
   public resetData() {
@@ -32,10 +35,9 @@ export class FilteringComponent implements OnInit {
     this.dataService.twoFactorData();
     this.dataService.verificationMethodData();
     this.dataService.domainData();
-  }
-
-  public exportData(): void {
-
+    this.dataService.secureDomainData();
+    this.dataService.messageClassificationData();
+    this.dataService.triggeredBusinessRulesData();
   }
 
   get startDate() {
@@ -44,5 +46,9 @@ export class FilteringComponent implements OnInit {
 
   get endDate() {
     return this.form.get('endDate').value;
+  }
+
+  get organization() {
+    return this.form.get('organization').value;
   }
 }
