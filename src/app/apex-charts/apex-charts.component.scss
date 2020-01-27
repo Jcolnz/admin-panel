@@ -6,6 +6,14 @@ mat-card {
   }
 }
 
+.data-card {
+  width: 100%;
+
+  mat-card-content {
+    width: 100%;
+  }
+}
+
 .filter {
   margin-right: 32px;
   flex-grow: 2;

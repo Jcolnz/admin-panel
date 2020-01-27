@@ -24,7 +24,7 @@
     "@angular/router": "~8.2.14",
     "@swimlane/ngx-charts": "^12.0.1",
     "angular-cli-ghpages": "^0.6.1",
-    "apexcharts": "^3.10.1",
+    "apexcharts": "^3.14.0",
     "hammerjs": "^2.0.8",
     "ng-apexcharts": "^1.1.1",
     "rxjs": "~6.4.0",

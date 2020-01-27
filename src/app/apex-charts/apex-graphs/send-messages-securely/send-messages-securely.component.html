@@ -1,45 +1,47 @@
+<div class="graph-container">
+  <apx-chart
+    #messageClassification
+    [chart]="chartOptions.chartDetails"
+    [colors]="chartOptions.colors"
+    [legend]="chartOptions.legend"
+    [plotOptions]="chartOptions.plotOptions"
+    [tooltip]="chartOptions.tooltip"
+    [title]="dataService.messageClassificationDataSet.title"
+    [series]="dataService.messageClassificationDataSet.series"
+    [xaxis]="dataService.messageClassificationDataSet.xaxis"
+    [yaxis]="dataService.messageClassificationDataSet.yaxis"
+    [noData]="chartOptions.noData"
+  >
+  </apx-chart>
+</div>
+<div class="graph-container">
+  <apx-chart
+    #triggeredBusinessRules
+    [chart]="chartOptions.chartDetails"
+    [colors]="chartOptions.colors"
+    [legend]="chartOptions.legend"
+    [plotOptions]="chartOptions.plotOptions"
+    [tooltip]="chartOptions.tooltip"
+    [title]="dataService.triggeredBusinessRulesDataSet.title"
+    [series]="dataService.triggeredBusinessRulesDataSet.series"
+    [xaxis]="dataService.triggeredBusinessRulesDataSet.xaxis"
+    [yaxis]="dataService.triggeredBusinessRulesDataSet.yaxis"
+    [noData]="chartOptions.noData"
+  >
+  </apx-chart>
+</div>
 
-    <apx-chart
-      #messageClassification
-      [chart]="chartOptions.chartDetails"
-      [colors]="chartOptions.colors"
-      [legend]="chartOptions.legend"
-      [plotOptions]="chartOptions.plotOptions"
-      [tooltip]="chartOptions.tooltip"
-      [title]="dataService.messageClassificationDataSet.title"
-      [series]="dataService.messageClassificationDataSet.series"
-      [xaxis]="dataService.messageClassificationDataSet.xaxis"
-      [yaxis]="dataService.messageClassificationDataSet.yaxis"
-      [noData]="chartOptions.noData"
-    >
-    </apx-chart>
-
-    <apx-chart
-      #triggeredBusinessRules
-      [chart]="chartOptions.chartDetails"
-      [colors]="chartOptions.colors"
-      [legend]="chartOptions.legend"
-      [plotOptions]="chartOptions.plotOptions"
-      [tooltip]="chartOptions.tooltip"
-      [title]="dataService.triggeredBusinessRulesDataSet.title"
-      [series]="dataService.triggeredBusinessRulesDataSet.series"
-      [xaxis]="dataService.triggeredBusinessRulesDataSet.xaxis"
-      [yaxis]="dataService.triggeredBusinessRulesDataSet.yaxis"
-      [noData]="chartOptions.noData"
-    >
-    </apx-chart>
-
-    <apx-chart
-      #recipientDomain
-      [chart]="chartOptions.chartDetails"
-      [colors]="chartOptions.colors"
-      [legend]="chartOptions.legend"
-      [plotOptions]="chartOptions.plotOptions"
-      [tooltip]="chartOptions.tooltip"
-      [title]="dataService.secureDomainDataSet.title"
-      [series]="dataService.secureDomainDataSet.series"
-      [xaxis]="dataService.secureDomainDataSet.xaxis"
-      [yaxis]="dataService.secureDomainDataSet.yaxis"
-      [noData]="chartOptions.noData"
-    >
-    </apx-chart>
+<apx-chart
+  #recipientDomain
+  [chart]="chartOptions.chartDetails"
+  [colors]="chartOptions.colors"
+  [legend]="chartOptions.legend"
+  [plotOptions]="chartOptions.plotOptions"
+  [tooltip]="chartOptions.tooltip"
+  [title]="dataService.secureDomainDataSet.title"
+  [series]="dataService.secureDomainDataSet.series"
+  [xaxis]="dataService.secureDomainDataSet.xaxis"
+  [yaxis]="dataService.secureDomainDataSet.yaxis"
+  [noData]="chartOptions.noData"
+>
+</apx-chart>

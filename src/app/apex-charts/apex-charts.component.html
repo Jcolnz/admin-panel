@@ -1,6 +1,7 @@
-<!-- top row -->
+
 <div class="content">
   <div class="container">
+    <!-- top row -->
     <div class="row">
       <mat-card class="filter">
         <mat-card-header>
@@ -20,8 +21,22 @@
           <button mat-raised-button color="primary" (click)="openDialog()">Export Raw Data</button>
         </mat-card-content>
       </mat-card>
-      <!-- /top row -->
     </div>
+    <!-- /top row -->
+
+    <!-- data card row -->
+    <div class="row">
+      <mat-card class="data-card">
+        <mat-card-header>
+          <mat-card-title>How much does my organization use ZIVVER?</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <app-data-card></app-data-card>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <!-- /data card row -->
+
     <!-- Main section -->
     <div class="row">
       <div class="graph">
@@ -59,6 +74,7 @@
         </mat-card>
       </div>
     </div>
+    <!-- /Main section -->
   </div>
 </div>
-<!-- /Main section -->
+

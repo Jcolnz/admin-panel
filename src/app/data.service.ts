@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {ApexOptions, ApexTitleSubtitle, ApexXAxis, ApexYAxis} from 'ng-apexcharts';
-import {mockData} from './mock-data';
+import {mockData} from './mock_data';
 
 @Injectable({
   providedIn: 'root'
@@ -14,8 +14,30 @@ export class DataService {
   public secureDomainDataSet: ApexOptions;
   public messageClassificationDataSet: ApexOptions;
   public triggeredBusinessRulesDataSet: ApexOptions;
+  public lineGraphDataSet: ApexOptions;
+  public totalData: number;
+  public sensitivePercentage: number;
+  public sentZIVVERMessage: number;
+  public isOpened: number;
 
   constructor() {
+    this.calculateDataValues();
+  }
+
+  public calculateDataValues(filtered?: MockData[]) {
+
+    if (filtered) {
+      console.log(this.filteredDataSet.length);
+      this.totalData = this.filteredDataSet.length;
+      this.sensitivePercentage = this.filteredDataSet.filter(x => x.is_sensitive === 'Gevoelig').length / this.totalData * 100;
+      this.sentZIVVERMessage = this.filteredDataSet.filter(x => x.is_sent_securely === 'Veilig verzonden').length;
+      this.isOpened = this.filteredDataSet.filter(x => x.is_read === 'Geopend').length / this.totalData * 100;
+    } else {
+      this.totalData = mockData.length;
+      this.sensitivePercentage = mockData.filter(x => x.is_sensitive === 'Gevoelig').length / this.totalData * 100;
+      this.sentZIVVERMessage = mockData.filter(x => x.is_sent_securely === 'Veilig verzonden').length;
+      this.isOpened = mockData.filter(x => x.is_read === 'Geopend').length / this.totalData * 100;
+    }
   }
 
   /* ----------- FILTERING ---------- */
@@ -41,15 +63,83 @@ export class DataService {
         return objDate >= localStartDate && objDate <= localEndDate;
       }
     }) as MockData[];
-    console.log(this.filteredDataSet);
     this.twoFactorData(true);
     this.verificationMethodData(true);
     this.domainData(true);
     this.secureDomainData(true);
     this.messageClassificationData(true);
     this.triggeredBusinessRulesData(true);
+    this.dataCardLine(true);
+    this.calculateDataValues(this.filteredDataSet);
   }
   /* ----------- FILTERING ---------- */
+
+  public dataCardLine(filter?: boolean): ApexOptions {
+
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+    const chartData = {
+      title: {
+        align: 'center',
+        text: 'Number of ZIVVER emails sent over time',
+        style: {
+          fontSize: '16px'
+        }
+      } as ApexTitleSubtitle,
+      yaxis: {
+        min: 0,
+        forceNiceScale: true,
+        title: {
+          text: 'Sent ZIVVER messages'
+        }
+      } as ApexYAxis
+    } as ApexOptions;
+
+    const localMockData = filter ? this.filteredDataSet : mockData;
+    const uniqueDates = [...new Set(localMockData.map(obj => {
+      const dateParts = obj.send_date.split('/');
+      return parseInt(dateParts[1], 10) - 1;
+    }))];
+
+    const formattedDates: string[] = [];
+    
+    uniqueDates.forEach(el => {
+      return formattedDates.push(months[el]);
+    });
+    formattedDates.sort((a, b) => {
+      return months.indexOf(a) - months.indexOf(b);
+    });
+    console.log(formattedDates);
+
+    const defaultData = uniqueDates.map(() => {
+      return 0;
+    });
+
+    const totalsResult = {
+      ...chartData,
+      series: [{
+        name: 'Sent Messages',
+        data: [...defaultData]
+      }] as ApexSeriesData[],
+      xaxis: {
+        ...chartData.xaxis,
+        categories: formattedDates
+      }
+    };
+
+    localMockData.forEach(obj => {
+      const dateParts = obj.send_date.split('/');
+      const parsedDate = parseInt(dateParts[1], 10) - 1;
+      const monthDate = months[parsedDate];
+      const dateCheck = totalsResult.xaxis.categories.indexOf(monthDate);
+      totalsResult.series[0].data[dateCheck] += 1;
+    });
+
+    totalsResult.series[0].data.push(totalsResult.series[0].data.shift());
+    totalsResult.xaxis.categories.push(totalsResult.xaxis.categories.shift());
+
+    return this.lineGraphDataSet = totalsResult as ApexOptions;
+  }
 
   /*
   {

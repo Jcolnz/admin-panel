@@ -1,0 +1,48 @@
+<div class="data-container">
+  <div class="data">
+    <p class="title">ZIVVER usage for this data.</p>
+    <mat-grid-list cols="2" rowHeight="2:1">
+      <mat-grid-tile>
+        <div class="grid-item">
+          <p class="number">{{ dataService.totalData }}</p>
+          <p>Emails sent from clients running ZIVVER</p>
+        </div>
+      </mat-grid-tile>
+      <mat-grid-tile>
+        <div class="grid-item">
+          <p class="number">{{ dataService.sensitivePercentage | number: '1.0-0' }}%</p>
+          <p>Of sent emails flagged as sensitive</p>
+        </div>
+      </mat-grid-tile>
+      <mat-grid-tile>
+        <div class="grid-item">
+          <p class="number">{{ dataService.sentZIVVERMessage }}</p>
+          <p>Emails sent as ZIVVER messages</p>
+        </div>
+      </mat-grid-tile>
+      <mat-grid-tile>
+        <div class="grid-item">
+          <p class="number">{{ dataService.isOpened | number: '1.0-0' }}%</p>
+          <p>Of sent ZIVVER messages opened</p>
+        </div>
+      </mat-grid-tile>
+    </mat-grid-list>
+  </div>
+  <div class="data">
+    <apx-chart
+      #lineGraph
+      [chart]="chartOptions.chartDetails"
+      [colors]="chartOptions.colors"
+      [dataLabels]="chartOptions.dataLabels"
+      [stroke]="chartOptions.stroke"
+      [legend]="chartOptions.legend"
+      [markers]="chartOptions.markers"
+      [tooltip]="chartOptions.tooltip"
+      [title]="dataService.lineGraphDataSet.title"
+      [series]="dataService.lineGraphDataSet.series"
+      [xaxis]="dataService.lineGraphDataSet.xaxis"
+      [yaxis]="dataService.lineGraphDataSet.yaxis"
+      [noData]="chartOptions.noData"
+    ></apx-chart>
+  </div>
+</div>

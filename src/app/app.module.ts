@@ -33,6 +33,7 @@ import { SendMessagesSecurelyComponent } from './apex-charts/apex-graphs/send-me
 import { TwoFaComponent } from './apex-charts/apex-graphs/two-fa/two-fa.component';
 import { DomainCommunicationComponent } from './apex-charts/apex-graphs/domain-communication/domain-communication.component';
 import { ExportDialogComponent } from './export-dialog/export-dialog.component';
+import { DataCardComponent } from './apex-charts/data-card/data-card.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { ExportDialogComponent } from './export-dialog/export-dialog.component';
     SendMessagesSecurelyComponent,
     TwoFaComponent,
     DomainCommunicationComponent,
-    ExportDialogComponent
+    ExportDialogComponent,
+    DataCardComponent
   ],
   imports: [
     BrowserModule,

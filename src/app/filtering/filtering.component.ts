@@ -38,6 +38,8 @@ export class FilteringComponent implements OnInit {
     this.dataService.secureDomainData();
     this.dataService.messageClassificationData();
     this.dataService.triggeredBusinessRulesData();
+    this.dataService.dataCardLine();
+    this.dataService.calculateDataValues();
   }
 
   get startDate() {
