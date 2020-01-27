@@ -15,13 +15,8 @@ export class DataCardComponent implements OnInit {
     chartDetails: {
       height: 400,
       type: 'line',
-      dropShadow: {
-        enabled: true,
-        color: '#000',
-        top: 18,
-        left: 7,
-        blur: 10,
-        opacity: 0.2
+      zoom: {
+        enabled: false
       }
     },
     colors: ['#0B74E7'],
@@ -51,7 +46,8 @@ export class DataCardComponent implements OnInit {
       text: 'No data Available',
       align: 'center',
       verticalAlign: 'middle'
-    }
+    },
+    
   };
 
 

@@ -31,12 +31,14 @@ export class DataService {
       this.totalData = this.filteredDataSet.length;
       this.sensitivePercentage = this.filteredDataSet.filter(x => x.is_sensitive === 'Gevoelig').length / this.totalData * 100;
       this.sentZIVVERMessage = this.filteredDataSet.filter(x => x.is_sent_securely === 'Veilig verzonden').length;
-      this.isOpened = this.filteredDataSet.filter(x => x.is_read === 'Geopend').length / this.totalData * 100;
+      this.isOpened = this.filteredDataSet.filter(x => x.is_read === 'Geopend').length / 
+      this.filteredDataSet.filter(x => x.is_sent_securely === 'Veilig verzonden').length * 100;
     } else {
       this.totalData = mockData.length;
       this.sensitivePercentage = mockData.filter(x => x.is_sensitive === 'Gevoelig').length / this.totalData * 100;
       this.sentZIVVERMessage = mockData.filter(x => x.is_sent_securely === 'Veilig verzonden').length;
-      this.isOpened = mockData.filter(x => x.is_read === 'Geopend').length / this.totalData * 100;
+      this.isOpened = mockData.filter(x => x.is_read === 'Geopend').length / 
+      mockData.filter(x => x.is_sent_securely === 'Veilig verzonden').length * 100;
     }
   }
 
@@ -76,7 +78,8 @@ export class DataService {
 
   public dataCardLine(filter?: boolean): ApexOptions {
 
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const months = ['Jan/20', 'Feb/19', 'Mar/19', 'Apr/19', 'May/19', 'June/19',
+    'July/19', 'Aug/19', 'Sep/19', 'Oct/19', 'Nov/19', 'Dec/19'];
 
     const chartData = {
       title: {
@@ -214,6 +217,7 @@ export class DataService {
       classificationsResult.series[secure].data[classificationIndex] += 1;
     });
 
+    console.log(classificationsResult)
     return this.triggeredBusinessRulesDataSet = classificationsResult as ApexOptions;
   }
 
