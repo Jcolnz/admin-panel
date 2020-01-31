@@ -19,15 +19,12 @@ export class DataCardComponent implements OnInit {
         enabled: false
       }
     },
-    colors: ['#0B74E7'],
+    colors: ['rgb(0, 54, 104)'],
     markers: {
       size: 3
     },
     dataLabels: {
       enabled: true
-    },
-    stroke: {
-      curve: 'smooth'
     },
     legend: {
       position: 'top',

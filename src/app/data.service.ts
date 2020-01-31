@@ -29,16 +29,16 @@ export class DataService {
     if (filtered) {
       console.log(this.filteredDataSet.length);
       this.totalData = this.filteredDataSet.length;
-      this.sensitivePercentage = this.filteredDataSet.filter(x => x.is_sensitive === 'Gevoelig').length / this.totalData * 100;
-      this.sentZIVVERMessage = this.filteredDataSet.filter(x => x.is_sent_securely === 'Veilig verzonden').length;
-      this.isOpened = this.filteredDataSet.filter(x => x.is_read === 'Geopend').length / 
-      this.filteredDataSet.filter(x => x.is_sent_securely === 'Veilig verzonden').length * 100;
+      this.sensitivePercentage = this.filteredDataSet.filter(x => x.is_sensitive === 'Sensitive').length / this.totalData * 100;
+      this.sentZIVVERMessage = this.filteredDataSet.filter(x => x.is_sent_securely === 'Sent securely').length;
+      this.isOpened = this.filteredDataSet.filter(x => x.is_read === 'Opened').length / 
+      this.filteredDataSet.filter(x => x.is_sent_securely === 'Sent securely').length * 100;
     } else {
       this.totalData = mockData.length;
-      this.sensitivePercentage = mockData.filter(x => x.is_sensitive === 'Gevoelig').length / this.totalData * 100;
-      this.sentZIVVERMessage = mockData.filter(x => x.is_sent_securely === 'Veilig verzonden').length;
-      this.isOpened = mockData.filter(x => x.is_read === 'Geopend').length / 
-      mockData.filter(x => x.is_sent_securely === 'Veilig verzonden').length * 100;
+      this.sensitivePercentage = mockData.filter(x => x.is_sensitive === 'Sensitive').length / this.totalData * 100;
+      this.sentZIVVERMessage = mockData.filter(x => x.is_sent_securely === 'Sent securely').length;
+      this.isOpened = mockData.filter(x => x.is_read === 'Opened').length / 
+      mockData.filter(x => x.is_sent_securely === 'Sent securely').length * 100;
     }
   }
 
@@ -47,7 +47,7 @@ export class DataService {
     
     const localStartDate = startDate ? startDate.toISOString().slice(0, 10) : undefined;
     const localEndDate = endDate ? endDate.toISOString().slice(0, 10) : undefined;
-
+    console.log(localStartDate + ' ' + localEndDate)
     this.filteredDataSet = mockData.filter(obj => {
       if (organizationUnit) {
           if (obj.sending_organizational_unit === organizationUnit) {
@@ -55,14 +55,24 @@ export class DataService {
               const dateParts = obj.send_date.split('/');
               const objDate = new Date(+dateParts[2], +dateParts[1] - 1, +dateParts[0]).toISOString().slice(0, 10);
               return objDate >= localStartDate && objDate <= localEndDate;
+            } else if (localStartDate && localEndDate === undefined) {
+              const dateParts = obj.send_date.split('/');
+              const objDate = new Date(+dateParts[2], +dateParts[1] - 1, +dateParts[0]).toISOString().slice(0, 10);
+              return objDate >= localStartDate;
             } else {
               return obj;
             }
           }
       } else {
-        const dateParts = obj.send_date.split('/');
-        const objDate = new Date(+dateParts[2], +dateParts[1] - 1, +dateParts[0]).toISOString().slice(0, 10);
-        return objDate >= localStartDate && objDate <= localEndDate;
+        if (localStartDate && localEndDate === undefined) {
+          const dateParts = obj.send_date.split('/');
+          const objDate = new Date(+dateParts[2], +dateParts[1] - 1, +dateParts[0]).toISOString().slice(0, 10);
+          return objDate >= localStartDate;
+        } else {
+          const dateParts = obj.send_date.split('/');
+          const objDate = new Date(+dateParts[2], +dateParts[1] - 1, +dateParts[0]).toISOString().slice(0, 10);
+          return objDate >= localStartDate && objDate <= localEndDate;
+        }
       }
     }) as MockData[];
     this.twoFactorData(true);
@@ -144,20 +154,6 @@ export class DataService {
     return this.lineGraphDataSet = totalsResult as ApexOptions;
   }
 
-  /*
-  {
-    "send_date": "02/12/2019",
-    "is_sent_securely": "Veilig verzonden",
-    "is_sensitive": "Niet gevoelig",
-    "classification": "",
-    "is_internal_recipient": "Externe ontvanger",
-    "recipient_domain": "voorbeeld-domein-vijf.nl",
-    "recipient_type": "Gastontvanger",
-    "verification_method": "Verificatie email",
-    "is_read": "Geopend",
-    "sending_organizational_unit": "Team 1"
-  },
-  */
   public triggeredBusinessRulesData(filter?: boolean): ApexOptions {
 
     const chartData = {
@@ -182,8 +178,8 @@ export class DataService {
       } as ApexYAxis
     } as ApexOptions;
 
-    const localMockData = filter ? this.filteredDataSet.filter(el => el.is_sensitive === 'Gevoelig' && el.classification !== '') :
-      mockData.filter(el => el.is_sensitive === 'Gevoelig' && el.classification !== '');
+    const localMockData = filter ? this.filteredDataSet.filter(el => el.is_sensitive === 'Sensitive' && el.classification !== '') :
+      mockData.filter(el => el.is_sensitive === 'Sensitive' && el.classification !== '');
     const uniqueClassifications = [...new Set(localMockData.map(item => {
         if (item.classification.includes('BSN')) {
           return 'BSN';
@@ -276,6 +272,8 @@ export class DataService {
       sensitiveResult.series[secure].data[sensitive] += 1;
     });
 
+    console.log(sensitiveResult);
+    sensitiveResult.series.reverse();
     return this.messageClassificationDataSet = sensitiveResult as ApexOptions;
   }
 
@@ -302,8 +300,8 @@ export class DataService {
     } as ApexOptions;
 
     // Filtering data to only guests
-    const localMockData = filter ? this.filteredDataSet.filter(el => el.is_sensitive === 'Gevoelig' && el.classification !== '') :
-      mockData.filter(el => el.is_sensitive === 'Gevoelig' && el.classification !== '');
+    const localMockData = filter ? this.filteredDataSet.filter(el => el.is_sensitive === 'Sensitive' && el.classification !== '') :
+      mockData.filter(el => el.is_sensitive === 'Sensitive' && el.classification !== '');
     // this one doesn't need graphData as no new Xaxis category values are assigned, think its the better way.
     const uniqueDomains = [...new Set(localMockData.map(item => item.recipient_domain))];
     const uniqueSecure = [...new Set(localMockData.map(item => item.is_sent_securely))];
@@ -413,8 +411,8 @@ export class DataService {
     } as ApexOptions;
 
     // Filtering data to only guests
-    const localMockData = filter ? this.filteredDataSet.filter(el => el.recipient_type === 'Gastontvanger') :
-      mockData.filter(el => el.recipient_type === 'Gastontvanger');
+    const localMockData = filter ? this.filteredDataSet.filter(el => el.recipient_type === 'Guest recipient') :
+      mockData.filter(el => el.recipient_type === 'Guest recipient');
 
     // new set based on verification methods, makes sure to only get unique instances.
     const verificationMethods = [...new Set(localMockData.map(item => item.verification_method))];
@@ -500,7 +498,7 @@ export class DataService {
     );
 
     domainResult.series.forEach(v => v.data.sort((a, b) => sums[b.x] - sums[a.x]));
-
+    domainResult.series.reverse();
     return this.domainDataSet = domainResult as ApexOptions;
   }
 

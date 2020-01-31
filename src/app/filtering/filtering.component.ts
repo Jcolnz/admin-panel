@@ -10,8 +10,8 @@ import {DataService} from '../data.service';
 export class FilteringComponent implements OnInit {
 
   public form = this.fb.group({
-    startDate: [new Date('10/1/2019')],
-    endDate: [new Date()],
+    startDate: [],
+    endDate: [],
     organization: ['']
   });
   public organizationUnits: string[] = [];

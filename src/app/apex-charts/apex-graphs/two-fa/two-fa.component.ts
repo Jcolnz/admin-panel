@@ -19,11 +19,15 @@ export class TwoFaComponent implements OnInit {
       stackType: '100%',
       type: 'bar'
     },
-    colors: ['#0B74E7', '#003668', '#00A9E0', '#E6F7FC'],
+    colors: ['rgb(0, 54, 104)', 'rgb(251,116,61)', 'rgb(0,186,155)', 'rgb(144,19,254)'],
     plotOptions: {
       bar: {
         horizontal: true
       }
+    },
+    stroke: {
+      width: 1,
+      colors: ["#fff"]
     },
     legend: {
       position: 'top',
