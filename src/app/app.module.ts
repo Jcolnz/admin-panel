@@ -5,6 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 
 // material imports
 import {MatCardModule} from '@angular/material/card';
@@ -69,7 +70,7 @@ import { DataCardComponent } from './apex-charts/data-card/data-card.component';
     ReactiveFormsModule
   ],
   exports: [],
-  providers: [DataService, {provide: MAT_DATE_LOCALE, useValue: 'en-GB'}
+  providers: [DataService, {provide: MAT_DATE_LOCALE, useValue: 'en-GB'}, {provide: LocationStrategy, useClass: HashLocationStrategy}
 ],
 entryComponents: [
   ExportDialogComponent
