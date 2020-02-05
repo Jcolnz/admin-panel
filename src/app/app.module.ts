@@ -70,8 +70,7 @@ import { DataCardComponent } from './apex-charts/data-card/data-card.component';
     ReactiveFormsModule
   ],
   exports: [],
-  providers: [DataService, {provide: MAT_DATE_LOCALE, useValue: 'en-GB'}, {provide: LocationStrategy, useClass: HashLocationStrategy}
-],
+  providers: [DataService, {provide: MAT_DATE_LOCALE, useValue: 'en-GB'}],
 entryComponents: [
   ExportDialogComponent
 ],

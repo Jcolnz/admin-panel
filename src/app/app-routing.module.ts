@@ -3,12 +3,12 @@ import { Routes, RouterModule } from '@angular/router';
 import {ApexChartsComponent} from './apex-charts/apex-charts.component';
 
 const routes: Routes = [
-  { path: 'apex-charts', component: ApexChartsComponent},
-  { path: '', redirectTo: '/apex-charts', pathMatch: 'full' }
+  { path: 'admin-dashboard', component: ApexChartsComponent},
+  { path: '', redirectTo: '/admin-dashboard', pathMatch: 'full' }
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { useHash: true })],
+  imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
